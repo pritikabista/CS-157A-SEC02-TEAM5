@@ -1,4 +1,4 @@
-package backend;
+package backend.model;
 
 class Account{
     private int accountID;

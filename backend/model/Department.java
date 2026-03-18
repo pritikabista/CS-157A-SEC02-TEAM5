@@ -1,4 +1,4 @@
-package backend;
+package backend.model;
 
 public class Department {
     private int departmentID;

@@ -1,4 +1,4 @@
-package backend;
+package backend.model;
 
 public class User extends Account {
     private int departmentID;
