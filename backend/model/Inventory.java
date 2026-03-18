@@ -23,6 +23,51 @@ public class Inventory {
         this.quantity = quantity;
         this.items = items;
     }
+    
+    // Append
+    public void addItem(Item item, int amount) {
+        if (amount <= 0) {
+            System.out.println("Invalid amount.");
+            return;
+        }
+
+        items.add(item);
+        quantity += amount;
+        System.out.println("Item added. Quantity: " + quantity);
+    }
+
+    // Withdraw
+    public boolean removeItem(Item item, int amount) {
+        if (amount <= 0) {
+            System.out.println("Invalid amount.");
+            return false;
+        }
+
+        if (!items.contains(item)) {
+            System.out.println("Item not found in inventory.");
+            return false;
+        }
+
+        if (quantity < amount) {
+            System.out.println("Not enough stock.");
+            return false;
+        }
+
+        quantity -= amount;
+
+        if (quantity == 0) {
+            items.remove(item);
+        }
+
+        System.out.println("Item removed. Quantity: " + quantity);
+        return true;
+    }
+
+
+    // Check current stock
+    public int checkStock() {
+        return quantity;
+    }
 
     void setLocationID(int locationID) { this.locationID = locationID; }
     void setLotNumber(int lotNumber) { this.lotNumber = lotNumber; }
