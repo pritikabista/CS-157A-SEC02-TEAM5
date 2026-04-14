@@ -5,12 +5,12 @@ public class Account{
     private String username; 
     private String pwdHashed;
 
-    Account(){
+    public Account(){
         this.accountID = 0;
         this.username = null;
         this.pwdHashed = null;
     }
-    Account(int accountID, String username, String pwdHashed){
+    public Account(int accountID, String username, String pwdHashed){
         this.accountID = accountID;
         this.username = username;
         this.pwdHashed = pwdHashed;
