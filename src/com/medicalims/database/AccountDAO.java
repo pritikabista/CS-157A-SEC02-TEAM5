@@ -1,4 +1,4 @@
-package database;
+package com.medicalims.database;
 
 import com.medicalims.model.Account; 
 import java.sql.*; 

@@ -1,4 +1,4 @@
-package database;
+package com.medicalims.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -7,26 +7,25 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.medicalims.model.Admin;
+import com.medicalims.model.User;
 
-public class AdminDAO {
+public class UserDAO {
     private final String url = "jdbc:mysql://localhost:3306/team5?useSSL=false&serverTimezone=UTC"; 
     private final String user = "root";
     private final String password = "CS157DeeAein"; 
 
-
-    public Admin getAdminIfExists(int accountID){
-        String sql_query = "SELECT * FROM Accounts x JOIN Admins y ON x.Account_ID = y.Account_ID WHERE x.Account_ID = ?";
-        List<Admin> resultAdmin = executeQuery(sql_query, accountID);
-
-        if (resultAdmin.isEmpty()){ //this account is not an admin
+    public User getUserIfExist(int accountID){
+        String sql_query = "SELECT * FROM Users U JOIN Accounts A ON U.Account_ID = A.Account_ID WHERE A.Account_ID = ?";
+        List<User> resultUser = executeQuery(sql_query, accountID);
+        
+        if(resultUser.isEmpty()){
             return null; 
         }
-        return resultAdmin.get(0);
-    }     
+        return resultUser.get(0); 
+    }
 
-    private List<Admin> executeQuery(String sql_query, Object... params){ 
-        List<Admin> admins = new ArrayList<>(); 
+    private List<User> executeQuery(String sql_query, Object... params){ 
+        List<User> users = new ArrayList<>(); 
 
         try{
             Class.forName("com.mysql.cj.jdbc.Driver"); 
@@ -43,14 +42,14 @@ public class AdminDAO {
             while(rs.next()){
                 int accountID = rs.getInt("Account_ID");
                 int departmentID = rs.getInt("Department_ID");
-                int officeNum = rs.getInt("Office_Number");
                 String username = rs.getString("Username");
                 String pwdHashed = rs.getString("Pwd_hashed");
+                String phNum = rs.getString("Phone_Number");
 
 
-                admins.add(new Admin(accountID, username, pwdHashed, departmentID, officeNum));
+                users.add(new User(accountID, username, pwdHashed, departmentID, phNum));
             }
-            
+
             rs.close(); //clean up ***** below
             stmt.close(); 
             con.close(); 
@@ -58,7 +57,7 @@ public class AdminDAO {
         } catch (Exception e){
             e.printStackTrace(); 
         }
-        return admins;
+        return  users;
     } //end of executeQuery()
 
 }
