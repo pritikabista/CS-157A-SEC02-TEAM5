@@ -2,7 +2,7 @@ package backend.model;
 
 public class User extends Account {
     private int departmentID;
-    private int phNum; 
+    private String phNum; 
 
     public User(){
         super();
@@ -10,15 +10,15 @@ public class User extends Account {
         this.phNum = 0;
     }
 
-    public User(int accountID, String username, String pwdHashed, int departmentID, int phNum){
+    public User(int accountID, String username, String pwdHashed, int departmentID, String phNum){
         super(accountID, username, pwdHashed);
         this.departmentID = departmentID;
         this.phNum = phNum;
     }
 
     void setDepartmentID(int departmentID) { this.departmentID = departmentID; }
-    void setPhNum(int phNum) { this.phNum = phNum; }
+    void setPhNum(String phNum) { this.phNum = phNum; }
 
     int getDepartmentID() { return this.departmentID; }
-    int getPhNum() { return this.phNum; }
+    String getPhNum() { return this.phNum; }
 }
