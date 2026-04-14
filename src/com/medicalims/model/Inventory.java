@@ -1,81 +1,62 @@
 package com.medicalims.model;
 
-import java.util.List;
-import java.util.ArrayList;
-
 public class Inventory {
 
+    private int itemReferenceNumber;   
     private int locationID;
-    private int lotNumber;
+    private String lotNumber;          
     private int quantity;
-    private List<Item> items;
+    private String itemName;           
+    private String categoryName;       
+    private String expirationDate;     
 
     public Inventory() {
+        this.itemReferenceNumber = 0;
         this.locationID = 0;
-        this.lotNumber = 0;
+        this.lotNumber = "";
         this.quantity = 0;
-        this.items = new ArrayList<>();
+        this.itemName = "";
+        this.categoryName = "";
+        this.expirationDate = "";
     }
 
-    public Inventory(int locationID, int lotNumber, int quantity, ArrayList<Item> items) {
-        this.locationID = locationID;
+    public Inventory(int itemReferenceNumber, String itemName, String categoryName,
+                     String lotNumber, String expirationDate, int quantity, int locationID) {
+
+        this.itemReferenceNumber = itemReferenceNumber;
+        this.itemName = itemName;
+        this.categoryName = categoryName;
         this.lotNumber = lotNumber;
+        this.expirationDate = expirationDate;
         this.quantity = quantity;
-        this.items = items;
-    }
-    
-    // Append
-    public void addItem(Item item, int amount) {
-        if (amount <= 0) {
-            System.out.println("Invalid amount.");
-            return;
-        }
-
-        items.add(item);
-        quantity += amount;
-        System.out.println("Item added. Quantity: " + quantity);
+        this.locationID = locationID;
     }
 
-    // Withdraw
-    public boolean removeItem(Item item, int amount) {
-        if (amount <= 0) {
-            System.out.println("Invalid amount.");
-            return false;
-        }
-
-        if (!items.contains(item)) {
-            System.out.println("Item not found in inventory.");
-            return false;
-        }
-
-        if (quantity < amount) {
-            System.out.println("Not enough stock.");
-            return false;
-        }
-
-        quantity -= amount;
-
-        if (quantity == 0) {
-            items.remove(item);
-        }
-
-        System.out.println("Item removed. Quantity: " + quantity);
-        return true;
+    public int getItemReferenceNumber() {
+        return itemReferenceNumber;
     }
 
+    public String getItemName() {
+        return itemName;
+    }
 
-    // Check current stock
-    public int checkStock() {
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public String getLotNumber() {
+        return lotNumber;
+    }
+
+    public String getExpirationDate() {
+        return expirationDate;
+    }
+
+    public int getQuantity() {
         return quantity;
     }
 
-    void setLocationID(int locationID) { this.locationID = locationID; }
-    void setLotNumber(int lotNumber) { this.lotNumber = lotNumber; }
-    void setQuantity(int quantity) { this.quantity = quantity; }
-    void setItems(ArrayList<Item> items) { this.items = items; }
-
-    int getLocationID() { return this.locationID; }
-    int getLotNumber() { return this.lotNumber; }
-    int getQuantity() { return this.quantity; }
-    List<Item> getItems() { return this.items; }
+    public int getLocationID() {
+        return locationID;
+    }
 }
