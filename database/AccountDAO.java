@@ -20,15 +20,25 @@ public class AccountDAO {
 
             Connection con = DriverManager.getConnection(url, user, passowrd); //create connection  *****
 
-            String sql_query = "SELECT * FROM Accoounts";
+            String sql_query = "SELECT * FROM Accounts";
             Statement stmt = con.createStatement(); //SQL Execution //sends SQL *****
             ResultSet rs = stmt.executeQuery(sql_query);
 
+            while(rs.next()){
+                int accountID = rs.getInt(1);
+                String username = rs.getString(2);
+                String pwdHashed = rs.getString(3);
+
+                accounts.add(new Account(accountID, username, pwdHashed));
+            }
+
+            rs.close(); //clean up ***** below
+            stmt.close(); 
+            con.close(); 
 
         } catch (Exception e){
             e.printStackTrace(); 
         }
-
         return accounts;
     }
 }
