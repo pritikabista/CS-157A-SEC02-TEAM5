@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MedIMS Purchase Requests</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+<div class="layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h2>MedIMS Admin</h2>
+    <a href="admin-dashboard.html">Dashboard</a>
+    <a href="admin-inventory.html">Inventory</a>
+    <a href="purchase-requests.html">Purchase Requests</a>
+    <a href="orders.html">Orders</a>
+    <a href="supplier-info.html">Supplier Info</a>
+    <a href="login.html">Logout</a>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main">
+    <div class="topbar">
+      <h2>Purchase Requests</h2>
+    </div>
+
+    <div class="card" style="margin-top: 20px;">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Request ID</th>
+              <th>User</th>
+              <th>Item</th>
+              <th>Message</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <!-- Request 1 -->
+            <tr class="clickable-row" onclick="toggleExpand('req1')">
+              <td>#REQ-101</td>
+              <td>John Doe (ER)</td>
+              <td>Surgical Gloves</td>
+              <td>Low stock in ER</td>
+              <td><button class="secondary-btn">View</button></td>
+            </tr>
+
+            <tr id="req1" style="display:none;">
+              <td colspan="5">
+                <div class="expanded-box">
+                  <p><strong>Request ID:</strong> REQ-101</p>
+                  <p><strong>User:</strong> John Doe</p>
+                  <p><strong>Department:</strong> ER</p>
+                  <p><strong>Item:</strong> Surgical Gloves</p>
+                  <p><strong>Message:</strong> We are running low on gloves, please restock urgently.</p>
+
+                  <div class="expanded-actions">
+                    <button class="primary-btn" onclick="makePurchase(event)">
+                      Make Purchase
+                    </button>
+                    <button class="gray-btn" onclick="closeRow(event, 'req1')">
+                      Close
+                    </button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Request 2 -->
+            <tr class="clickable-row" onclick="toggleExpand('req2')">
+              <td>#REQ-102</td>
+              <td>Alice Smith (ICU)</td>
+              <td>IV Fluids</td>
+              <td>Need more stock</td>
+              <td><button class="secondary-btn">View</button></td>
+            </tr>
+
+            <tr id="req2" style="display:none;">
+              <td colspan="5">
+                <div class="expanded-box">
+                  <p><strong>Request ID:</strong> REQ-102</p>
+                  <p><strong>User:</strong> Alice Smith</p>
+                  <p><strong>Department:</strong> ICU</p>
+                  <p><strong>Item:</strong> IV Fluids</p>
+                  <p><strong>Message:</strong> IV fluids stock is getting low, please reorder soon.</p>
+
+                  <div class="expanded-actions">
+                    <button class="primary-btn" onclick="makePurchase(event)">
+                      Make Purchase
+                    </button>
+                    <button class="gray-btn" onclick="closeRow(event, 'req2')">
+                      Close
+                    </button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Request 3 -->
+            <tr class="clickable-row" onclick="toggleExpand('req3')">
+              <td>#REQ-103</td>
+              <td>David Lee (Pharmacy)</td>
+              <td>Insulin Vials</td>
+              <td>Expiring soon</td>
+              <td><button class="secondary-btn">View</button></td>
+            </tr>
+
+            <tr id="req3" style="display:none;">
+              <td colspan="5">
+                <div class="expanded-box">
+                  <p><strong>Request ID:</strong> REQ-103</p>
+                  <p><strong>User:</strong> David Lee</p>
+                  <p><strong>Department:</strong> Pharmacy</p>
+                  <p><strong>Item:</strong> Insulin Vials</p>
+                  <p><strong>Message:</strong> Current batch is expiring soon, need new stock.</p>
+
+                  <div class="expanded-actions">
+                    <button class="primary-btn" onclick="makePurchase(event)">
+                      Make Purchase
+                    </button>
+                    <button class="gray-btn" onclick="closeRow(event, 'req3')">
+                      Close
+                    </button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  function toggleExpand(id) {
+    const row = document.getElementById(id);
+    row.style.display = row.style.display === "table-row" ? "none" : "table-row";
+  }
+
+  function closeRow(event, id) {
+    event.stopPropagation();
+    document.getElementById(id).style.display = "none";
+  }
+
+  function makePurchase(event) {
+    event.stopPropagation();
+    alert("Purchase request approved! Order will be created.");
+    window.location.href = "orders.html";
+  }
+</script>
+
+</body>
+</html>

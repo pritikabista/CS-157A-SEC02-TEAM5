@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>MedIMS Admin</h2>
+      <nav>
+        <a href="admin-dashboard.html">Dashboard</a>
+        <a href="admin-inventory.html">Inventory</a>
+        <a href="purchase-requests.html">Purchase Requests</a>
+        <a href="orders.html">Orders</a>
+        <a href="supplier-info.html">Supplier Info</a>
+        <a href="add-item.html">Add Item</a>
+        <a href="login.html">Logout</a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <h1>Admin Dashboard</h1>
+          <p>Manage inventory, requests, orders, and suppliers.</p>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+        <a href="admin-inventory.html" class="dashboard-tile">
+          <h3>Inventory</h3>
+          <p class="note">View and update hospital inventory</p>
+        </a>
+
+        <a href="purchase-requests.html" class="dashboard-tile">
+          <h3>Purchase Requests</h3>
+          <p class="note">Review user requests</p>
+        </a>
+
+        <a href="orders.html" class="dashboard-tile">
+          <h3>Orders</h3>
+          <p class="note">Approve and update order status</p>
+        </a>
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/script.js"></script>
+</body>
+</html>
