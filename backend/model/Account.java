@@ -16,13 +16,13 @@ public class Account{
         this.pwdHashed = pwdHashed;
     }
 
-    void setAccountID(int accountID){ this.accountID = accountID; }
-    void setUsername(String username) {this.username = username; }
-    void setpwdHashed(String pwdHashed) { this.pwdHashed = pwdHashed; }
+    public void setAccountID(int accountID){ this.accountID = accountID; }
+    public void setUsername(String username) {this.username = username; }
+    public void setpwdHashed(String pwdHashed) { this.pwdHashed = pwdHashed; }
 
-    int getAccountID() { return this.accountID; }
-    String getUsername() { return this.username; }
-    String getPwdHashed() { return this.pwdHashed; }
+    public int getAccountID() { return this.accountID; }
+    public String getUsername() { return this.username; }
+    public String getPwdHashed() { return this.pwdHashed; }
 }
 
 
