@@ -1,4 +1,4 @@
-package backend.repositories;
+package com.medicalims.repository;
 
 //repository files will connect DB to our model classes 
 

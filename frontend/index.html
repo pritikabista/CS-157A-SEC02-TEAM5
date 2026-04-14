@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MedIMS Inventory</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #2c3e50;
+        }
+
+        nav a {
+            margin-right: 15px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 15px;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        button {
+            padding: 6px 12px;
+            cursor: pointer;
+        }
+    </style>
+
+    <script>
+        function searchItem() {
+            let input = document.getElementById("searchInput").value.toLowerCase();
+            let table = document.getElementById("inventoryTable");
+            let rows = table.getElementsByTagName("tr");
+
+            for (let i = 1; i < rows.length; i++) {
+                let itemCell = rows[i].getElementsByTagName("td")[0];
+                if (itemCell) {
+                    let text = itemCell.textContent.toLowerCase();
+                    rows[i].style.display = text.includes(input) ? "" : "none";
+                }
+            }
+        }
+
+        function withdrawItem(button) {
+            let row = button.parentNode.parentNode;
+            let stockCell = row.cells[1];
+            let stock = parseInt(stockCell.innerText);
+
+            if (stock > 0) {
+                stock--;
+                stockCell.innerText = stock;
+            } else {
+                alert("Out of stock");
+            }
+        }
+    </script>
+</head>
+
+<body>
+
+    <h1>MedIMS Inventory System</h1>
+
+    <nav>
+        <a href="#">Home</a>
+        <a href="#">Items</a>
+        <a href="#">Reports</a>
+    </nav>
+
+    <hr>
+
+    <h2>Search Item</h2>
+    <input type="text" id="searchInput" placeholder="Enter item name">
+    <button onclick="searchItem()">Search</button>
+
+    <h2>Inventory List</h2>
+    <table id="inventoryTable">
+        <tr>
+            <th>Item Name</th>
+            <th>Stock</th>
+            <th>Location</th>
+            <th>Lot Number</th>
+            <th>Expiration Date</th>
+            <th>Action</th>
+        </tr>
+
+        <tr>
+            <td>Gloves</td>
+            <td>50</td>
+            <td>ER</td>
+            <td>L001</td>
+            <td>2026-12-01</td>
+            <td><button onclick="withdrawItem(this)">Withdraw</button></td>
+        </tr>
+
+        <tr>
+            <td>Masks</td>
+            <td>30</td>
+            <td>ICU</td>
+            <td>L002</td>
+            <td>2025-10-15</td>
+            <td><button onclick="withdrawItem(this)">Withdraw</button></td>
+        </tr>
+
+        <tr>
+            <td>Syringes</td>
+            <td>20</td>
+            <td>OR</td>
+            <td>L003</td>
+            <td>2027-03-20</td>
+            <td><button onclick="withdrawItem(this)">Withdraw</button></td>
+        </tr>
+
+    </table>
+
+</body>
+</html>

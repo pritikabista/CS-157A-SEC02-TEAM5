@@ -1,4 +1,4 @@
-package backend.model;
+package com.medicalims.model;
 
 public class Admin extends Account{
     private int departmentID;

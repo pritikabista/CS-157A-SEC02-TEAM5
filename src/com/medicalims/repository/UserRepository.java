@@ -1,4 +1,4 @@
-package backend.repositories;
+package com.medicalims.repository;
 
 public class UserRepository {
    

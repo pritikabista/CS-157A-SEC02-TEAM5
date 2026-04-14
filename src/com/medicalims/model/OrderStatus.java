@@ -1,4 +1,4 @@
-package backend.model;
+package com.medicalims.model;
 
 public enum OrderStatus {
     PENDING,
