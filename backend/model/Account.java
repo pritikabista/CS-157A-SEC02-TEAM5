@@ -1,6 +1,6 @@
 package backend.model;
 
-class Account{
+public class Account{
     private int accountID;
     private String username; 
     private String pwdHashed;
