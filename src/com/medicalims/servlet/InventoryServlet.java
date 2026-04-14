@@ -39,16 +39,16 @@ public class InventoryServlet extends HttpServlet {
         List<Inventory> inventoryList = new ArrayList<>();
 
         String sql =
-            "SELECT i.item_reference_number, i.item_name, c.category_name, " +
-            "       inv.lot_number, i.expiration_date, inv.quantity, inv.location_id " +
-            "FROM items i " +
-            "LEFT JOIN categories c ON i.category_id = c.category_id " +
-            "LEFT JOIN inventory inv ON i.item_reference_number = inv.item_reference_number " +
-            "WHERE i.item_name LIKE ? " +
-            "   OR CAST(i.item_reference_number AS CHAR) LIKE ? " +
-            "   OR inv.lot_number LIKE ? " +
-            "   OR c.category_name LIKE ? " +
-            "ORDER BY i.item_name ASC";
+        		"SELECT i.item_reference_number, i.item_name, c.category_name, " +
+        	    "       inv.lot_number, i.expiration_date, inv.quantity, inv.location_id " +
+        	    "FROM items i, categories c, inventory inv " +
+        	    "WHERE i.category_id = c.category_id " +
+        	    "  AND i.item_reference_number = inv.item_reference_number " +
+        	    "  AND (i.item_name LIKE ? " +
+        	    "   OR CAST(i.item_reference_number AS CHAR) LIKE ? " +
+        	    "   OR inv.lot_number LIKE ? " +
+        	    "   OR c.category_name LIKE ?) " +
+        	    "ORDER BY i.item_name ASC";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
