@@ -7,7 +7,7 @@ public class User extends Account {
     public User(){
         super();
         this.departmentID = 0;
-        this.phNum = 0;
+        this.phNum = "";
     }
 
     public User(int accountID, String username, String pwdHashed, int departmentID, String phNum){
