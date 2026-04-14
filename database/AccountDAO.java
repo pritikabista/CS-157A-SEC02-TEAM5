@@ -1,6 +1,6 @@
 package database;
 
-import backend.model.Account; 
+import com.medicalims.model.Account; 
 import java.sql.*; 
 import java.util.List; 
 import java.util.ArrayList;
