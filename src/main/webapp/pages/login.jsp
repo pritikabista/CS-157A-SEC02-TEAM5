@@ -60,7 +60,7 @@
           <button
             type="button"
             class="secondary"
-            onclick="window.location.href='${pageContext.request.contextPath}/register.jsp'"
+            onclick="window.location.href='${pageContext.request.contextPath}/pages/create-account.jsp'"
           >
             Create Account
           </button>
