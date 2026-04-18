@@ -1,4 +1,4 @@
-package main.java.com.medicalims.model;
+package com.medicalims.model;
 
 public class Admin extends Account{
     private int departmentID;

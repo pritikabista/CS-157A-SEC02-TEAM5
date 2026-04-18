@@ -1,4 +1,4 @@
-package main.java.com.medicalims.servlet;
+package com.medicalims.servlet;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -14,8 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import main.java.com.medicalims.model.Inventory;
-import main.java.com.medicalims.util.DBConnection;
+import com.medicalims.model.Inventory;
+import com.medicalims.util.DBConnection;
 
 @WebServlet("/inventory")
 public class InventoryServlet extends HttpServlet {

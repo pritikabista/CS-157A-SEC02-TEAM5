@@ -1,4 +1,4 @@
-package main.java.com.medicalims.util;
+package com.medicalims.util;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -6,17 +6,17 @@ import java.sql.SQLException;
 
 public class DBConnection {
 
-    private static final String URL = "jdbc:mysql://127.0.0.1:3306/medicalims?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
+    private static final String URL = "jdbc:mysql://localhost:3306/team5?useSSL=false&serverTimezone=UTC"; 
     private static final String USER = "root";
-    private static final String PASSWORD = "Radikobob7&";
+    private static final String PASSWORD = "CS157DeeAein";
 
     public static Connection getConnection() throws SQLException {
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            Class.forName("com.mysql.cj.jdbc.Driver"); //load MySQL driver so that we can talk to database *****
         } catch (ClassNotFoundException e) {
             throw new SQLException("MySQL Driver not found.", e);
         }
 
-        return DriverManager.getConnection(URL, USER, PASSWORD);
+        return DriverManager.getConnection(URL, USER, PASSWORD);  //create connection  *****
     }
 }

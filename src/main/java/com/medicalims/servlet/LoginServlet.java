@@ -1,10 +1,10 @@
-package main.java.com.medicalims.servlet;
+package com.medicalims.servlet;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 
-import main.java.com.medicalims.util.DBConnection;
+import com.medicalims.util.DBConnection;
 
 import java.io.IOException;
 import java.sql.Connection;

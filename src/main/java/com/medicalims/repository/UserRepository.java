@@ -1,4 +1,4 @@
-package main.java.com.medicalims.repository;
+package com.medicalims.repository;
 
 public class UserRepository {
    

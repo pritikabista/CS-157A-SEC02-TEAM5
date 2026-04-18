@@ -1,12 +1,13 @@
-package main.java.com.medicalims.database;
+package com.medicalims.database;
 
 import java.sql.*; 
 import java.util.List;
 
-import main.java.com.medicalims.model.Account;
+import com.medicalims.model.Account;
 
 import java.util.ArrayList;
 
+import com.medicalims.util.DBConnection; 
 
 public class AccountDAO {
     
@@ -74,9 +75,7 @@ public class AccountDAO {
         List<Account> accounts = new ArrayList<>(); 
 
         try{
-            Class.forName("com.mysql.cj.jdbc.Driver");  //load MySQL driver so that we can talk to database *****
-
-            Connection con = DriverManager.getConnection(url, user, password); //create connection  *****
+            Connection con = DBConnection.getConnection(); 
             PreparedStatement stmt = con.prepareStatement(sql_query); //SQL Execution //sends SQL *****
 
             for(int i = 0; i < params.length; i++){
@@ -88,9 +87,9 @@ public class AccountDAO {
             while(rs.next()){
                 int accountID = rs.getInt("Account_ID");
                 String username = rs.getString("Username");
-                String pwdHashed = rs.getString("Pwd_hashed");
+                String password = rs.getString("password");
 
-                accounts.add(new Account(accountID, username, pwdHashed));
+                accounts.add(new Account(accountID, username, password));
             }
 
             rs.close(); //clean up ***** below
@@ -107,9 +106,7 @@ public class AccountDAO {
         int rs = 0; //updating fails
 
         try{
-            Class.forName("com.mysql.cj.jdbc.Driver");  //load MySQL driver so that we can talk to database *****
-
-            Connection con = DriverManager.getConnection(url, user, password); //create connection  *****
+            Connection con = DBConnection.getConnection(); 
             PreparedStatement stmt = con.prepareStatement(sql_query); //SQL Execution //sends SQL *****
 
             for(int i = 0; i < params.length; i++){

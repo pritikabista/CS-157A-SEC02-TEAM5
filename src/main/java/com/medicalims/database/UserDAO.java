@@ -1,4 +1,4 @@
-package main.java.com.medicalims.database;
+package com.medicalims.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import main.java.com.medicalims.model.User;
+import com.medicalims.model.User;
 
 public class UserDAO {
     private final String url = "jdbc:mysql://localhost:3306/team5?useSSL=false&serverTimezone=UTC"; 
