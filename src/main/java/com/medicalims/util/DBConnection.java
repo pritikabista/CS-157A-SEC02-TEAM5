@@ -1,4 +1,4 @@
-package com.medicalims.util;
+package main.java.com.medicalims.util;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

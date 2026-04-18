@@ -1,4 +1,4 @@
-package com.medicalims.model;
+package main.java.com.medicalims.model;
 
 public class Category {
 

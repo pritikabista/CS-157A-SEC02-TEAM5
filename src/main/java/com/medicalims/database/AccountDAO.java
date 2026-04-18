@@ -1,8 +1,10 @@
-package com.medicalims.database;
+package main.java.com.medicalims.database;
 
-import com.medicalims.model.Account; 
 import java.sql.*; 
-import java.util.List; 
+import java.util.List;
+
+import main.java.com.medicalims.model.Account;
+
 import java.util.ArrayList;
 
 
