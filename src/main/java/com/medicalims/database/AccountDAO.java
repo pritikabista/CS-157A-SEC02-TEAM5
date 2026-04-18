@@ -8,6 +8,7 @@ import com.medicalims.model.Account;
 import java.util.ArrayList;
 
 import com.medicalims.util.DBConnection; 
+//import com.medicalims.util.HashPw;
 import com.medicalims.util.HashPw;
 
 public class AccountDAO {
@@ -18,30 +19,17 @@ public class AccountDAO {
         return executeQuery(sql_query);
     }
 
-    public Account getAccountIfExist(String username, String pwd){ //for login feature
+    public Account getAccountIfExist(String username){ //for login
         String sql_query = "SELECT * FROM Accounts WHERE username = ?"; //using preparedStatement to avoid SQL injection risk
 
-        if (pwd == null || pwd.isEmpty() || username == null || username.isEmpty()){
-            return null; 
-        }
-
         List<Account> resultAccount = executeQuery(sql_query, username);
-
-        //result is empty (no users with that username exists)
-        if (resultAccount.isEmpty()) { 
+        if (resultAccount.isEmpty()) { //result is empty (no users with that username exists)
             return null;
         }
-
-        String hashedPwdFromDatabase = resultAccount.get(0).getPwdHashed();
-        //confirm the pwd matches *****assuming username is unique //Java Serverlet should handle this logic instead 
-        if (HashPw.checkPwd(pwd, hashedPwdFromDatabase)){
-            return resultAccount.get(0); //return the current user object
-        }
-
-        return null; //pwd don't match
+        return resultAccount.get(0); 
     }
 
-    public boolean usernameAlreadyExists(String username){ //for sign up feature
+    public boolean usernameAlreadyExists(String username){ //for sign up
         String sql_query = "SELECT * FROM Accounts WHERE username = ?";
         
         if (username == null || username.isEmpty()){ //*
