@@ -8,8 +8,6 @@ import com.medicalims.model.Account;
 import java.util.ArrayList;
 
 import com.medicalims.util.DBConnection; 
-//import com.medicalims.util.HashPw;
-import com.medicalims.util.HashPw;
 
 public class AccountDAO {
     
