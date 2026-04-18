@@ -58,18 +58,19 @@ public class LoginServlet extends HttpServlet {
 
         HttpSession session = request.getSession(); //create session for the logged-in browser or gets the existing one 
         
+        session.setAttribute("username", currAccount.getUsername());
+
         if (isAdmin){ //*****! new attribute added here, this is an Admin Object, see Admin class *****!/
+            //key = "admin", value = Admin object 
             session.setAttribute("admin", currAdmin); 
             session.setAttribute("role", "admin");
+            response.sendRedirect(request.getContextPath() + "/pages/admin-dashboard.jsp"); //request.getContextPath() starts from webapp root
         }
         else{
             session.setAttribute("user", currUser);
             session.setAttribute("role", "user");
+            response.sendRedirect(request.getContextPath() + "/pages/user-dashboard.jsp");
         }
-        
-        session.setAttribute("username", currAccount.getUsername());
-        response.sendRedirect("/pages/dashboard.jsp");
-    
         
         /* 
         try (Connection conn = DBConnection.getConnection();
