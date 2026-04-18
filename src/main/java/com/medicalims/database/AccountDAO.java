@@ -32,34 +32,19 @@ public class AccountDAO {
     public boolean usernameAlreadyExists(String username){ //for sign up
         String sql_query = "SELECT * FROM Accounts WHERE username = ?";
         
-        if (username == null || username.isEmpty()){ //*
-            return true; //don't allow empty username
-        }
-
         List<Account> resultAccount = executeQuery(sql_query, username);
-
         if (resultAccount.isEmpty()){
             return false; //no such username exists
         }
         return true; //such username exists
     }
 
-    public boolean insertAccount(String username, String pwd){ //call this after checking usernameAlreadyExists and validating username *
+    public int insertAccount(String username, String hashedPw){ //call this after checking usernameAlreadyExists and validating username *
         String sql_query = "INSERT INTO Accounts (Username, Pwd_hashed) Values (?, ?)";
 
-        if (pwd == null || pwd.isEmpty() || username == null || username.isEmpty()){
-            return false; 
-        }
-        
-        String hashedPw = HashPw.hashedPwd(pwd);
-        int result = executeUpdate(sql_query, username, hashedPw);
+        int accountID = executeInsertion(sql_query, username, hashedPw);
 
-        if (result == 0){
-            return false; //insertion fails
-        }
-        else{
-            return true; //successfully inserted
-        }
+        return accountID; //-1 if insertion fails, accountID if inserted
     }
 
     //abstraction on loading MySQL Driver, creating DB connection, running SQL query, returning the result as a list
@@ -94,24 +79,31 @@ public class AccountDAO {
         return accounts;
     } //end of executeQuery()
 
-    private int executeUpdate(String sql_query, Object ... params){
-        int rs = 0; //updating fails
+    private int executeInsertion(String sql_query, Object ... params){
+        int generatedKey = -1; //insering a new account fails
         try{
             Connection con = DBConnection.getConnection(); 
-            PreparedStatement stmt = con.prepareStatement(sql_query); //SQL Execution //sends SQL *****
+            PreparedStatement stmt = con.prepareStatement(sql_query, PreparedStatement.RETURN_GENERATED_KEYS); //SQL Execution // after excuting INSERT, get the auto-generated alues (AUTO_INCREMENT PK)
 
             for(int i = 0; i < params.length; i++){
                 stmt.setObject(i+1, params[i]);
             }
 
-            rs = stmt.executeUpdate();
+            int rowsAffected = stmt.executeUpdate(); //1 = 1 row inserted, 0 = insertion fails
 
-            //clean up ***** below
-            stmt.close(); 
+            if(rowsAffected > 0){ //successfully inserted
+                ResultSet rs = stmt.getGeneratedKeys(); //get the auto-incremented accountID back (to use this to add the account to users)
+                if (rs.next()) { //read the key
+                    generatedKey = rs.getInt(1);
+                }
+                rs.close();
+            }
+
+            stmt.close();  //clean up ***** below
             con.close(); 
         } catch (Exception e){
             e.printStackTrace(); 
         }
-        return rs; //1 -> 1 row inserted, >1 multiple row affected 
+        return generatedKey; //if -1, not inserted, else return account_ID
     }
 }
