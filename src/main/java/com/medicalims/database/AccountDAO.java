@@ -8,24 +8,23 @@ import com.medicalims.model.Account;
 import java.util.ArrayList;
 
 import com.medicalims.util.DBConnection; 
+import com.medicalims.util.HashPw;
 
 public class AccountDAO {
     
-    private final String url = "jdbc:mysql://localhost:3306/team5?useSSL=false&serverTimezone=UTC"; 
-    private final String user = "root";
-    private final String password = "CS157DeeAein"; 
-
     public List<Account> getAllAccounts(){
         String sql_query = "SELECT * FROM Accounts";
+
         return executeQuery(sql_query);
     }
 
-    public Account getAccountIfExist(String username, String pwdHashed){ //for login feature
-        if (pwdHashed.isEmpty()){
+    public Account getAccountIfExist(String username, String pwd){ //for login feature
+        String sql_query = "SELECT * FROM Accounts WHERE username = ?"; //using preparedStatement to avoid SQL injection risk
+
+        if (pwd == null || pwd.isEmpty() || username == null || username.isEmpty()){
             return null; 
         }
 
-        String sql_query = "SELECT * FROM Accounts WHERE username = ?"; //using preparedStatement to avoid SQL injection risk
         List<Account> resultAccount = executeQuery(sql_query, username);
 
         //result is empty (no users with that username exists)
@@ -33,20 +32,22 @@ public class AccountDAO {
             return null;
         }
 
+        String hashedPwdFromDatabase = resultAccount.get(0).getPwdHashed();
         //confirm the pwd matches *****assuming username is unique //Java Serverlet should handle this logic instead 
-        if (resultAccount.get(0).getPwdHashed().equals(pwdHashed)){
-            return resultAccount.get(0);
+        if (HashPw.checkPwd(pwd, hashedPwdFromDatabase)){
+            return resultAccount.get(0); //return the current user object
         }
 
         return null; //pwd don't match
     }
 
     public boolean usernameAlreadyExists(String username){ //for sign up feature
-        if (username.isEmpty()){ //*
+        String sql_query = "SELECT * FROM Accounts WHERE username = ?";
+        
+        if (username == null || username.isEmpty()){ //*
             return true; //don't allow empty username
         }
 
-        String sql_query = "SELECT * FROM Accounts WHERE username = ?";
         List<Account> resultAccount = executeQuery(sql_query, username);
 
         if (resultAccount.isEmpty()){
@@ -55,11 +56,15 @@ public class AccountDAO {
         return true; //such username exists
     }
 
-    public boolean insertAccount(String username, String password){ //call this after checking usernameAlreadyExists and validating username *
-
+    public boolean insertAccount(String username, String pwd){ //call this after checking usernameAlreadyExists and validating username *
         String sql_query = "INSERT INTO Accounts (Username, Pwd_hashed) Values (?, ?)";
 
-        int result = executeUpdate(sql_query, username, password);
+        if (pwd == null || pwd.isEmpty() || username == null || username.isEmpty()){
+            return false; 
+        }
+        
+        String hashedPw = HashPw.hashedPwd(pwd);
+        int result = executeUpdate(sql_query, username, hashedPw);
 
         if (result == 0){
             return false; //insertion fails
@@ -67,7 +72,6 @@ public class AccountDAO {
         else{
             return true; //successfully inserted
         }
-        
     }
 
     //abstraction on loading MySQL Driver, creating DB connection, running SQL query, returning the result as a list
@@ -87,9 +91,9 @@ public class AccountDAO {
             while(rs.next()){
                 int accountID = rs.getInt("Account_ID");
                 String username = rs.getString("Username");
-                String password = rs.getString("password");
+                String pwdHashed = rs.getString("Pwd_Hashed");
 
-                accounts.add(new Account(accountID, username, password));
+                accounts.add(new Account(accountID, username, pwdHashed));
             }
 
             rs.close(); //clean up ***** below
@@ -104,7 +108,6 @@ public class AccountDAO {
 
     private int executeUpdate(String sql_query, Object ... params){
         int rs = 0; //updating fails
-
         try{
             Connection con = DBConnection.getConnection(); 
             PreparedStatement stmt = con.prepareStatement(sql_query); //SQL Execution //sends SQL *****
@@ -118,11 +121,9 @@ public class AccountDAO {
             //clean up ***** below
             stmt.close(); 
             con.close(); 
-
         } catch (Exception e){
             e.printStackTrace(); 
         }
-
         return rs; //1 -> 1 row inserted, >1 multiple row affected 
     }
 }
