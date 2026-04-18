@@ -15,7 +15,7 @@ public class UserDAO {
     private final String password = "CS157DeeAein"; 
 
     public User getUserIfExist(int accountID){
-        String sql_query = "SELECT * FROM Users U JOIN Accounts A ON U.Account_ID = A.Account_ID WHERE A.Account_ID = ?";
+        String sql_query = "SELECT * FROM Users WHERE Account_ID = ?";
         List<User> resultUser = executeQuery(sql_query, accountID);
         
         if(resultUser.isEmpty()){

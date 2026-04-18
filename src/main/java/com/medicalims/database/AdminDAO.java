@@ -15,8 +15,8 @@ public class AdminDAO {
     private final String password = "CS157DeeAein"; 
 
 
-    public Admin getAdminIfExists(int accountID){
-        String sql_query = "SELECT * FROM Accounts x JOIN Admins y ON x.Account_ID = y.Account_ID WHERE x.Account_ID = ?";
+    public Admin getAdminIfExist(int accountID){
+        String sql_query = "SELECT * FROM Admins WHERE Account_ID = ?";
         List<Admin> resultAdmin = executeQuery(sql_query, accountID);
 
         if (resultAdmin.isEmpty()){ //this account is not an admin
