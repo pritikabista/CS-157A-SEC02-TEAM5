@@ -39,7 +39,7 @@
         <div class="form-group">
           <label for="departmentId">Department ID</label>
           <input
-            type="text"
+            type="number"
             id="departmentId"
             name="departmentId"
             placeholder="Enter department ID"
