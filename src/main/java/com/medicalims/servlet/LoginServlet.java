@@ -36,10 +36,10 @@ public class LoginServlet extends HttpServlet {
                 session.setAttribute("username", username);
                 session.setAttribute("role", rs.getString("role"));
 
-                response.sendRedirect("dashboard.jsp");
+                response.sendRedirect("/pages/dashboard.jsp");
             } else {
                 request.setAttribute("error", "Invalid login.");
-                request.getRequestDispatcher("login.jsp").forward(request, response);
+                request.getRequestDispatcher("/pages/login.jsp").forward(request, response);
             }
 
         } catch (Exception e) {
