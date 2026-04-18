@@ -13,7 +13,7 @@ import com.medicalims.util.*;
 public class UserDAO {
 
 
-    public User getUserIfExist(int accountID){
+    public User getUserIfExist(int accountID){ //has to use JOIN because my User Object is a subclass of Account and constructor needs username and password hashed but Users table don't have them
         String sql_query = "SELECT U.Account_ID, U.Department_ID, U.Phone_Number, ACC.Username, ACC.Pwd_Hashed FROM Users U JOIN Accounts ACC ON U.Account_ID = ACC.Account_ID WHERE U.Account_ID = ?";
         List<User> resultUser = executeQuery(sql_query, accountID);
         
