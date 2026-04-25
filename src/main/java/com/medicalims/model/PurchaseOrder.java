@@ -3,36 +3,49 @@ package com.medicalims.model;
 public class PurchaseOrder {
     private int orderID; 
     private int itemReferenceNum; 
-    private int supplierID;
     private OrderStatus status; 
     private String approvedBy;
+
+    private int userID;
+    private String message;
+    private int qty;
 
     public PurchaseOrder() {
         this.orderID = 0;
         this.itemReferenceNum = 0;
-        this.supplierID = 0;
         this.status = OrderStatus.PENDING;
         this.approvedBy = "";
+
+        this.userID = 0;
+        this.message = "";
+        this.qty = 0;
+
     }
 
-    public PurchaseOrder(int orderID, int itemReferenceNum, int supplierID, OrderStatus status, String approvedBy) {
+    public PurchaseOrder(int orderID, int itemReferenceNum, OrderStatus status, String approvedBy, int userID, String message, int qty) {
         this.orderID = orderID;
         this.itemReferenceNum = itemReferenceNum;
-        this.supplierID = supplierID;
         this.status = status;
         this.approvedBy = approvedBy;
+
+        this.userID = userID;
+        this.message = message;
+        this.qty = qty;
     }
 
-    void setOrderID(int orderID) { this.orderID = orderID; }
-    void setItemReferenceNum(int itemReferenceNum) { this.itemReferenceNum = itemReferenceNum; }
-    void setSupplierID(int supplierID) { this.supplierID = supplierID; }
-    void setStatus(OrderStatus status) { this.status = status; }
-    void setApprovedBy(String approvedBy) { this.approvedBy = approvedBy; }
+    public void setOrderID(int orderID) { this.orderID = orderID; }
+    public void setItemReferenceNum(int itemReferenceNum) { this.itemReferenceNum = itemReferenceNum; }
+    public void setStatus(OrderStatus status) { this.status = status; }
+    public void setApprovedBy(String approvedBy) { this.approvedBy = approvedBy; }
+    public void setUserID(int userID){this.userID=userID;}
+    public void setMessage(String message){this.message=message;}
+    public void setQty(int qty){this.qty=qty;}
 
-    int getOrderID() { return this.orderID; }
-    int getItemReferenceNum() { return this.itemReferenceNum; }
-    int getSupplierID() { return this.supplierID; }
-    OrderStatus getStatus() { return this.status; }
-    String getApprovedBy() { return this.approvedBy; }
-    
+    public int getOrderID() { return this.orderID; }
+    public int getItemReferenceNum() { return this.itemReferenceNum; }
+    public OrderStatus getStatus() { return this.status; }
+    public String getApprovedBy() { return this.approvedBy; }
+    public int getUserID(){return userID;}
+    public String getMessage(){return message;}
+    public int getQty(){return qty;}
 }
