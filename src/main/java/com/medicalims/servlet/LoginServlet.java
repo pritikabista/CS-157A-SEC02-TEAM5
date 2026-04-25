@@ -69,7 +69,7 @@ public class LoginServlet extends HttpServlet {
         else{
             session.setAttribute("user", currUser);
             session.setAttribute("role", "user");
-            response.sendRedirect(request.getContextPath() + "/pages/user-dashboard.jsp");
+            response.sendRedirect(request.getContextPath() + "/user-dashboard"); //goes to servlet first 
         }
         
         /* 
