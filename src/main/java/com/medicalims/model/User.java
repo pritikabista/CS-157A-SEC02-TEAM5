@@ -19,6 +19,6 @@ public class User extends Account {
     void setDepartmentID(int departmentID) { this.departmentID = departmentID; }
     void setPhNum(String phNum) { this.phNum = phNum; }
 
-    int getDepartmentID() { return this.departmentID; }
-    String getPhNum() { return this.phNum; }
+    public int getDepartmentID() { return this.departmentID; }
+    public String getPhNum() { return this.phNum; }
 }
