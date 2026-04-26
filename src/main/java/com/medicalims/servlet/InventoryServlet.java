@@ -1,36 +1,47 @@
 package com.medicalims.servlet;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.*;
+import java.io.IOException;
+import java.util.List;
 
-import com.medicalims.model.Inventory;
-import com.medicalims.util.DBConnection;
+import com.medicalims.model.InventoryItem;
+import com.medicalims.model.User;
+
+import com.medicalims.database.UserInventoryDAO;
 
 @WebServlet("/inventory")
 public class InventoryServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+    //doGet = handles page loading
+        //user will see all the items when he first clicks view my inventory
+    //doPost = handles form submissing
+        //user can choose how to sort the items (by locationId or lot number or expiration date)
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("username") == null) {
-            response.sendRedirect("login.jsp");
+
+        if (session == null){
+            response.sendRedirect(request.getContextPath() + "/pages/login.jsp");
+            return; 
+        }
+       
+        User user = (User)session.getAttribute("user");
+
+        if (user == null) {
+            response.sendRedirect(request.getContextPath() + "/pages/login.jsp");
             return;
         }
 
+        //load all the InventoryItems here
+        UserInventoryDAO userInventoryDAO = new UserInventoryDAO(); 
+        List<InventoryItem> inventoryItems = userInventoryDAO.getAllInventoryItemsToDisplay();
+
+        request.setAttribute("inventoryItems", inventoryItems);
+        request.getRequestDispatcher("/pages/inventory.jsp").forward(request, response);
+
+        /*
         String search = request.getParameter("search");
         if (search == null) {
             search = "";
@@ -83,5 +94,77 @@ public class InventoryServlet extends HttpServlet {
         }
 
         request.getRequestDispatcher("/pages/inventory.jsp").forward(request, response);
+        */
+    }
+
+    @Override 
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String userInput = request.getParameter("search");
+
+        String filterType = request.getParameter("filterType");
+        String filterValue = request.getParameter("filterValue");
+        
+
+        UserInventoryDAO userInventoryDAO = new UserInventoryDAO(); 
+        List<InventoryItem> inventoryItems;
+
+        boolean searchEmpty = (userInput == null || userInput.trim().isEmpty());
+        boolean filterTypeEmpty = (filterType == null || filterType.trim().isEmpty());
+        boolean filterValueEmpty = (filterValue == null || filterValue.trim().isEmpty());
+
+        
+        if(!searchEmpty){ //user used the search bar
+            userInput = userInput.trim();
+            inventoryItems = userInventoryDAO.searchInventoryItems(userInput);
+        }
+        else if(!filterTypeEmpty){
+            filterType = filterType.trim();
+
+            switch(filterType){
+                case "location":
+                    if (!filterValueEmpty){
+                        int locationID = Integer.parseInt(filterValue);
+                        inventoryItems = userInventoryDAO.getAllInventoryItemsByLocation(locationID);
+                    }
+                    else {
+                        inventoryItems = userInventoryDAO.getAllInventoryItemsToDisplay();
+                    }
+                    break;
+                
+                case "lot":
+                    if(!filterValueEmpty){
+                        try{
+                            int lotNumber = Integer.parseInt(filterValue);
+                            inventoryItems = userInventoryDAO.getAllInventoryItemsByLotNumber(lotNumber);
+                        } catch (NumberFormatException e){
+                            inventoryItems = userInventoryDAO.getAllInventoryItemsToDisplay();
+                            request.setAttribute("errorMessage", "Lot number must be numeric.");
+                        }
+                    }
+                    else{
+                        inventoryItems = userInventoryDAO.getAllInventoryItemsToDisplay();
+                    }
+                    break; 
+
+                case "expiration":
+                    inventoryItems = userInventoryDAO.getAllInventoryItemsByNearestExpirationDate();
+                    break;
+
+                default: 
+                    inventoryItems = userInventoryDAO.getAllInventoryItemsToDisplay();
+            }
+        }
+
+        else{
+            inventoryItems = userInventoryDAO.getAllInventoryItemsToDisplay(); 
+        }
+
+        request.setAttribute("inventoryItems", inventoryItems);
+        request.setAttribute("search", userInput);
+        request.setAttribute("filterType", filterType);
+        request.setAttribute("filterValue", filterValue);
+
+        request.getRequestDispatcher("/pages/inventory.jsp").forward(request, response); 
+
     }
 }
