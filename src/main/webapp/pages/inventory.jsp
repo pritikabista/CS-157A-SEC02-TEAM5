@@ -153,16 +153,16 @@
                 container.innerHTML =
                     '<select name="filterValue" id="filterValue">' +
                     '<option value="">Select Location</option>' +
-                    '<option value="1">Building 1 - Room 101</option>' +
-                    '<option value="2">Building 1 - Room 102</option>' +
-                    '<option value="3">Building 1 - Room 103</option>' +
-                    '<option value="4">Building 2 - Room 201</option>' +
-                    '<option value="5">Building 2 - Room 202</option>' +
-                    '<option value="6">Building 2 - Room 203</option>' +
-                    '<option value="7">Building 3 - Room 301</option>' +
-                    '<option value="8">Building 3 - Room 302</option>' +
-                    '<option value="9">Building 3 - Room 303</option>' +
-                    '<option value="10">Building 1 - Room 100</option>' +
+                    '<option value="1">B1-R101</option>' +
+                    '<option value="2">B1-R102</option>' +
+                    '<option value="3">B1-R103</option>' +
+                    '<option value="4">B2-R201</option>' +
+                    '<option value="5">B2-R202</option>' +
+                    '<option value="6">B2-R203</option>' +
+                    '<option value="7">B3-R301</option>' +
+                    '<option value="8">B3-R302</option>' +
+                    '<option value="9">B3-R303</option>' +
+                    '<option value="10">B1-R100</option>' +
                     '</select>';
 
                 document.getElementById("filterValue").value = savedFilterValue;
@@ -185,13 +185,13 @@
 
     <div class="top-bar">
         <h1>Inventory</h1>
-        <a class="back-link" href="dashboard.jsp">Back to Dashboard</a>
+        <a class="back-link" href="<%= request.getContextPath() %>/pages/user-dashboard.jsp">Back to Dashboard</a>
     </div>
 
     <div class="search-box">
         <form action="inventory" method="post">
             <input type="text" name="search"
-                   placeholder="Search by item name, item ref #, or category"
+                   placeholder="Search by item name, item ref #, or category name"
                    value="<%= search %>">
             <button type="submit">Search</button>
             <a href="inventory">Reset</a>
@@ -227,7 +227,7 @@
                 <th>Lot #</th>
                 <th>Expiration Date</th>
                 <th>Quantity</th>
-                <th>Location ID</th>
+                <th>Location</th>
             </tr>
         </thead>
         <tbody>
@@ -236,11 +236,11 @@
                     <tr>
                         <td><%= item.getItemReferenceNumber() %></td>
                         <td><%= item.getItemName() %></td>
-                        <td><%= item.getCategoryID() %></td>
+                        <td><%= item.getCategoryName() %></td>
                         <td><%= item.getLotNumber() %></td>
                         <td><%= item.getExpirationDate() != null ? item.getExpirationDate() : "" %></td>
                         <td><%= item.getStock() %></td>
-                        <td><%= item.getLocationID() %></td>
+                        <td><%= item.getLocation() %></td>
                     </tr>
                 <% } %>
             <% } else { %>
