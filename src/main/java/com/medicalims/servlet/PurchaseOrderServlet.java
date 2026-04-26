@@ -34,7 +34,7 @@ public class PurchaseOrderServlet extends HttpServlet{
         }
 
         //load items here to let the user pick from dropdown menu and forward it (LATER)
-        //use request.getRequestDispatcher("/jsp/user-request-purchaseOrder.jsp").forward(request, response); 
+        request.getRequestDispatcher("/pages/user-request-purchaseOrder.jsp").forward(request, response); 
     
     }
 
@@ -114,7 +114,7 @@ public class PurchaseOrderServlet extends HttpServlet{
         }
 
 
-        response.sendRedirect(request.getContextPath() + "/pages/user-dashboard.jsp");
+        response.sendRedirect(request.getContextPath() + "/user-dashboard");
         //POST -> insert -> REDIRECT so that user can't do duplicate insert 
 
     }

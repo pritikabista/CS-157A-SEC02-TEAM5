@@ -82,6 +82,6 @@ public class InventoryServlet extends HttpServlet {
             request.setAttribute("errorMessage", "Error loading inventory: " + e.getMessage());
         }
 
-        request.getRequestDispatcher("/inventory.jsp").forward(request, response);
+        request.getRequestDispatcher("/pages/inventory.jsp").forward(request, response);
     }
 }
