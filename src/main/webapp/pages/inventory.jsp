@@ -1,11 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List" %>
-<%@ page import="com.medicalims.model.Inventory" %>
+<%@ page import="com.medicalims.model.InventoryItem" %>
+<%@ page import="com.medicalims.model.User" %>
 
 <%
-    String username = (String) session.getAttribute("username");
-    if (username == null) {
-        response.sendRedirect("login.jsp");
+    User user = (User) session.getAttribute("user");
+    if (user == null) {
+        response.sendRedirect(request.getContextPath() + "/pages/login.jsp");
         return;
     }
 
@@ -14,8 +15,18 @@
         search = "";
     }
 
-    List<Inventory> inventoryList =
-            (List<Inventory>) request.getAttribute("inventoryList");
+    String filterType = (String) request.getAttribute("filterType");
+    if (filterType == null) {
+        filterType = "";
+    }
+
+    String filterValue = (String) request.getAttribute("filterValue");
+    if (filterValue == null) {
+        filterValue = "";
+    }
+
+    List<InventoryItem> inventoryItems =
+            (List<InventoryItem>) request.getAttribute("inventoryItems");
 
     String errorMessage = (String) request.getAttribute("errorMessage");
 %>
@@ -71,6 +82,34 @@
             color: #007bff;
         }
 
+        .filter-box {
+            margin-bottom: 20px;
+        }
+
+        .filter-box select {
+            padding: 8px;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+
+        .filter-box input[type="text"] {
+            padding: 8px;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+
+        .filter-box button {
+            padding: 8px 12px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .filter-box a {
+            margin-left: 10px;
+            text-decoration: none;
+            color: #007bff;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -103,6 +142,44 @@
             padding: 20px;
         }
     </style>
+
+    <script>
+        function updateFilterOptions() {
+            const filterType = document.getElementById("filterType").value;
+            const container = document.getElementById("filterValueContainer");
+            const savedFilterValue = "<%= filterValue %>";
+
+            if (filterType === "location") {
+                container.innerHTML =
+                    '<select name="filterValue" id="filterValue">' +
+                    '<option value="">Select Location</option>' +
+                    '<option value="1">Building 1 - Room 101</option>' +
+                    '<option value="2">Building 1 - Room 102</option>' +
+                    '<option value="3">Building 1 - Room 103</option>' +
+                    '<option value="4">Building 2 - Room 201</option>' +
+                    '<option value="5">Building 2 - Room 202</option>' +
+                    '<option value="6">Building 2 - Room 203</option>' +
+                    '<option value="7">Building 3 - Room 301</option>' +
+                    '<option value="8">Building 3 - Room 302</option>' +
+                    '<option value="9">Building 3 - Room 303</option>' +
+                    '<option value="10">Building 1 - Room 100</option>' +
+                    '</select>';
+
+                document.getElementById("filterValue").value = savedFilterValue;
+            } 
+            else if (filterType === "lot") {
+                container.innerHTML =
+                    '<input type="text" name="filterValue" placeholder="Enter Lot Number" value="' + savedFilterValue + '">';
+            } 
+            else {
+                container.innerHTML = '';
+            }
+        }
+
+        window.onload = function() {
+            updateFilterOptions();
+        };
+    </script>
 </head>
 <body>
 
@@ -112,11 +189,27 @@
     </div>
 
     <div class="search-box">
-        <form action="inventory" method="get">
+        <form action="inventory" method="post">
             <input type="text" name="search"
-                   placeholder="Search by item name, item ref #, lot #, or category"
+                   placeholder="Search by item name, item ref #, or category"
                    value="<%= search %>">
             <button type="submit">Search</button>
+            <a href="inventory">Reset</a>
+        </form>
+    </div>
+
+    <div class="filter-box">
+        <form action="inventory" method="post">
+            <select name="filterType" id="filterType" onchange="updateFilterOptions()">
+                <option value="">Select Filter</option>
+                <option value="location" <%= "location".equals(filterType) ? "selected" : "" %>>By Location</option>
+                <option value="lot" <%= "lot".equals(filterType) ? "selected" : "" %>>By Lot Number</option>
+                <option value="expiration" <%= "expiration".equals(filterType) ? "selected" : "" %>>Nearest Expiration Date</option>
+            </select>
+
+            <span id="filterValueContainer"></span>
+
+            <button type="submit">Apply Filter</button>
             <a href="inventory">Reset</a>
         </form>
     </div>
@@ -138,15 +231,15 @@
             </tr>
         </thead>
         <tbody>
-            <% if (inventoryList != null && !inventoryList.isEmpty()) { %>
-                <% for (Inventory item : inventoryList) { %>
+            <% if (inventoryItems != null && !inventoryItems.isEmpty()) { %>
+                <% for (InventoryItem item : inventoryItems) { %>
                     <tr>
                         <td><%= item.getItemReferenceNumber() %></td>
                         <td><%= item.getItemName() %></td>
-                        <td><%= item.getCategoryName() != null ? item.getCategoryName() : "" %></td>
-                        <td><%= item.getLotNumber() != null ? item.getLotNumber() : "" %></td>
+                        <td><%= item.getCategoryID() %></td>
+                        <td><%= item.getLotNumber() %></td>
                         <td><%= item.getExpirationDate() != null ? item.getExpirationDate() : "" %></td>
-                        <td><%= item.getQuantity() %></td>
+                        <td><%= item.getStock() %></td>
                         <td><%= item.getLocationID() %></td>
                     </tr>
                 <% } %>
