@@ -1,13 +1,18 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="java.util.List" %>
 <%@ page import="com.medicalims.model.Item" %>
+
+
+<%-- Temp, chatgpted frontend --%>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>User Request</title>
-  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css" />
 </head>
 <body>
   <div class="page main">
@@ -16,7 +21,7 @@
         <h2>Submit Request</h2>
         <p>Request purchase or reorder for a selected item.</p>
       </div>
-      <a href="user-inventory.jsp"><button type="button" class="secondary">Back to Inventory</button></a>
+      <a href="<%= request.getContextPath() %>/inventory" class="secondary-btn">Back to Inventory</a>
     </div>
 
     <%
@@ -52,7 +57,7 @@
     <% } %>
 
     <div class="form-card">
-      <form id="requestForm" method="post" action="user-purchaseOrder">
+      <form id="requestForm" method="post" action="<%= request.getContextPath() %>/user-purchaseOrder">
         <div class="form-group">
           <label for="itemSearch">Search Item</label>
           <input
@@ -111,7 +116,7 @@
         </div>
 
         <div class="form-actions">
-          <button type="submit">Submit Request</button>
+          <button type="submit" class="primary-btn">Submit Request</button>
         </div>
       </form>
     </div>
@@ -179,6 +184,6 @@
     }
   </script>
 
-  <script src="../js/script.js"></script>
+  <script src="<%= request.getContextPath() %>/js/script.js"></script>
 </body>
 </html>

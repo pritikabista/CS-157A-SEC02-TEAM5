@@ -24,7 +24,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Purchase Orders</title>
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css">
 </head>
 <body>
 <div class="page main">
@@ -34,8 +34,8 @@
             <h2>My Purchase Orders</h2>
             <p>View all requests you have submitted.</p>
         </div>
-        <a href="user-dashboard.jsp">
-            <button type="button" class="secondary">Back to Dashboard</button>
+        <a href="<%= request.getContextPath() %>/user-dashboard" class="secondary-btn">
+            Back to Dashboard
         </a>
     </div>
 
@@ -58,9 +58,9 @@
             </div>
 
             <div class="form-actions">
-                <button type="submit">Apply Filter</button>
-                <a href="<%= request.getContextPath() %>/user-purchaseOrders">
-                    <button type="button" class="secondary">Clear Filter</button>
+                <button type="submit" class="primary-btn">Apply Filter</button>
+                <a href="<%= request.getContextPath() %>/user-purchaseOrders" class="secondary-btn">
+                    Clear Filter
                 </a>
             </div>
         </form>
@@ -72,38 +72,39 @@
         <% if (purchaseOrders == null || purchaseOrders.isEmpty()) { %>
             <p>No purchase orders found.</p>
         <% } else { %>
-            <table style="width: 100%; border-collapse: collapse; margin-top: 12px;">
-                <thead>
-                <tr style="border-bottom: 1px solid #ddd; text-align: left;">
-                    <th style="padding: 12px;">Order ID</th>
-                    <th style="padding: 12px;">Item Reference #</th>
-                    <th style="padding: 12px;">Quantity</th>
-                    <th style="padding: 12px;">Message</th>
-                    <th style="padding: 12px;">Status</th>
-                    <th style="padding: 12px;">Approved By</th>
-                </tr>
-                </thead>
-                <tbody>
-                <% for (PurchaseOrder order : purchaseOrders) { %>
-                    <tr style="border-bottom: 1px solid #eee;">
-                        <td style="padding: 12px;"><%= order.getOrderID() %></td>
-                        <td style="padding: 12px;"><%= order.getItemReferenceNumber() %></td>
-                        <td style="padding: 12px;"><%= order.getQty() %></td>
-                        <td style="padding: 12px;"><%= order.getMessage() %></td>
-                        <td style="padding: 12px;"><%= order.getStatus() %></td>
-                        <td style="padding: 12px;">
-                            <%= order.getApprovedBy() == 0 ? "Not yet approved" : order.getApprovedBy() %>
-                        </td>
+            <div class="table-wrap" style="margin-top: 12px;">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Item Reference #</th>
+                        <th>Quantity</th>
+                        <th>Message</th>
+                        <th>Status</th>
+                        <th>Approved By</th>
                     </tr>
-                <% } %>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    <% for (PurchaseOrder order : purchaseOrders) { %>
+                        <tr>
+                            <td><%= order.getOrderID() %></td>
+                            <td><%= order.getItemReferenceNumber() %></td>
+                            <td><%= order.getQty() %></td>
+                            <td><%= order.getMessage() %></td>
+                            <td><%= order.getStatus() %></td>
+                            <td>
+                                <%= order.getApprovedBy() == 0 ? "Not yet approved" : order.getApprovedBy() %>
+                            </td>
+                        </tr>
+                    <% } %>
+                    </tbody>
+                </table>
+            </div>
         <% } %>
     </div>
 
 </div>
 
-<script src="../js/script.js"></script>
+<script src="<%= request.getContextPath() %>/js/script.js"></script>
 </body>
 </html>
-

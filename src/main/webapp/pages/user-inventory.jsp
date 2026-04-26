@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>User Inventory</title>
-  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css" />
 </head>
 <body>
   <div class="page main">
@@ -16,8 +16,8 @@
           <p class="note">Search, filter, sort, and expand items to withdraw or request.</p>
         </div>
         <div class="user-nav-links">
-          <a href="user-inventory.jsp">Inventory</a>
-          <a href="../login.jsp">Logout</a>
+          <a href="<%= request.getContextPath() %>/inventory">Inventory</a>
+          <a href="<%= request.getContextPath() %>/pages/login.jsp">Logout</a>
         </div>
       </div>
     </div>
@@ -64,6 +64,6 @@
     </div>
   </div>
 
-  <script src="../js/script.js"></script>
+  <script src="<%= request.getContextPath() %>/js/script.js"></script>
 </body>
 </html>
