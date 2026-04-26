@@ -42,7 +42,7 @@ public class PurchaseOrderDAO {
         //int approvedBy = 0; don't insert anything, allow Null 
         String status = "PENDING";
 
-        String sql_query = "INSERT INTO Purchase_orders (Item_Referen`ce_Number, Status, Message, Qty) Values (?, ?, ?, ?)";
+        String sql_query = "INSERT INTO Purchase_orders (Item_Reference_Number, Status, Message, Qty) Values (?, ?, ?, ?)";
         int orderID = executeInsertion(sql_query, itemReferenceNum, status, message, qty);
 
         if (orderID == -1){ //insertion to the Purchase Order fails
