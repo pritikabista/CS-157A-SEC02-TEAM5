@@ -141,6 +141,28 @@
             text-align: center;
             padding: 20px;
         }
+
+        .expandable-row {
+            display: none;
+            background-color: #eef3f7;
+        }
+
+        .expandable-content {
+            padding: 18px 12px;
+            min-height: 70px;
+        }
+
+        .expandable-content input[type="number"] {
+            padding: 6px;
+            margin-left: 8px;
+            margin-right: 10px;
+            width: 80px;
+        }
+
+        .expandable-content button {
+            padding: 6px 10px;
+            cursor: pointer;
+        }
     </style>
 
     <script>
@@ -173,6 +195,15 @@
             } 
             else {
                 container.innerHTML = '';
+            }
+        }
+
+        function toggleRow(index) {
+            const row = document.getElementById("expand-" + index);
+            if (row.style.display === "table-row") {
+                row.style.display = "none";
+            } else {
+                row.style.display = "table-row";
             }
         }
 
@@ -232,8 +263,9 @@
         </thead>
         <tbody>
             <% if (inventoryItems != null && !inventoryItems.isEmpty()) { %>
+                <% int i = 0; %>
                 <% for (InventoryItem item : inventoryItems) { %>
-                    <tr>
+                    <tr data-row-index="<%= i %>" onclick="toggleRow( this.dataset.rowIndex )" style="cursor:pointer;">
                         <td><%= item.getItemReferenceNumber() %></td>
                         <td><%= item.getItemName() %></td>
                         <td><%= item.getCategoryName() %></td>
@@ -242,6 +274,25 @@
                         <td><%= item.getStock() %></td>
                         <td><%= item.getLocation() %></td>
                     </tr>
+
+                    <tr id="expand-<%= i %>" class="expandable-row">
+                        <td colspan="7">
+                            <div class="expandable-content">
+                                <form action="inventory" method="post">
+                                    <input type="hidden" name="action" value="withdraw">
+                                    <input type="hidden" name="itemReferenceNumber" value="<%= item.getItemReferenceNumber() %>">
+                                    <input type="hidden" name="locationID" value="<%= item.getLocationID() %>">
+
+                                    Withdraw Qty:
+                                    <input type="number" name="qty" min="1" required>
+
+                                    <button type="submit">Withdraw</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <% i++; %>
                 <% } %>
             <% } else { %>
                 <tr>

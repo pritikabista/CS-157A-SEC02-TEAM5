@@ -25,6 +25,11 @@
       String success = (String) request.getAttribute("success");
       String message = (String) request.getAttribute("message");
       User user = (User) session.getAttribute("user");
+
+      if (user == null) {
+        response.sendRedirect(request.getContextPath() + "/pages/login.jsp");
+        return;
+    }
     %>
 
     <% if (error != null) { %>
