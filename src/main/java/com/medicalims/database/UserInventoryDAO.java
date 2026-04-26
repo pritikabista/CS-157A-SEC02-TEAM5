@@ -60,7 +60,7 @@ public class UserInventoryDAO {
 
     //User will be able to withdraw items //a method that first check whether the item 
     public boolean withdrawItem(int itemReferenceNum, int qty, int locationID){ //had to use locationID because items can exist in multiple locations
-        String sql_query = "UPDATE Inventory SET Stock = Stock - ?" +
+        String sql_query = "UPDATE Inventory SET Stock = Stock - ? " +
                             "WHERE Location_ID = ? AND Item_Reference_Number = ? AND Stock >= ?";
         return executeUpdate(sql_query, qty, locationID, itemReferenceNum, qty);
     }
@@ -112,10 +112,11 @@ public class UserInventoryDAO {
                 int lotNumber = rs.getInt("Lot_Number");
                 String itemName = rs.getString("Item_Name");
                 Date expirationDate = rs.getDate("Expiration_Date");
+                int locationID = rs.getInt("Location_ID");
 
                 String location = "B" + buildingNum + "-R" + roomNum; //B1-R103 = building 1, room 103 (first floor)
             
-                inventoryItems.add(new InventoryItem(itemReferenceNum, categoryName, lotNumber, itemName, expirationDate, location, stock));
+                inventoryItems.add(new InventoryItem(itemReferenceNum, categoryName, lotNumber, itemName, expirationDate, locationID, location, stock));
             }
 
             rs.close(); //clean up ***** below
