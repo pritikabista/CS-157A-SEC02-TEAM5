@@ -9,6 +9,7 @@ import com.medicalims.model.OrderStatus;
 import com.medicalims.model.User;
 import com.medicalims.database.PurchaseOrderDAO;
 // import com.medicalims.model.PurchaseOrder;
+import com.medicalims.database.UserInventoryDAO;
 
 @WebServlet("/user-dashboard")
 public class UserDashboardServlet extends HttpServlet{
@@ -30,12 +31,20 @@ public class UserDashboardServlet extends HttpServlet{
             return;
         }
 
-        PurchaseOrderDAO purchaseOrderDAO = new PurchaseOrderDAO();
+        PurchaseOrderDAO purchaseOrderDAO = new PurchaseOrderDAO();//to get the # of pending orders 
+        UserInventoryDAO userInventoryDAO = new UserInventoryDAO();//to get the # of items expiring within a week, low stocks items
 
-        //get the number of PENDING purchaseOrders 
+
+        //get the number of PENDING purchaseOrders, # of items expiring soon, # of items that are low in stock 
         int pendingOrderCounts = purchaseOrderDAO.getPurchaseOrdersByUserAndStatus(user.getAccountID(), OrderStatus.PENDING).size();
+        int itemsExpiringCounts = userInventoryDAO.getInventoryItemsExpiringInAWeek().size();
+        int itemsLowInStockCounts = userInventoryDAO.getInventoryItemsLowInStock().size();
 
-        request.setAttribute("pendingOrderCounts", pendingOrderCounts); //*** use this in jsp***/
+        request.setAttribute("myRequestsCount", pendingOrderCounts);
+        request.setAttribute("expiringSoonCount", itemsExpiringCounts);
+        request.setAttribute("lowStockCount", itemsLowInStockCounts);
+
+
         request.setAttribute("userID", user.getAccountID());
         request.setAttribute("departmentID", user.getDepartmentID());
         request.setAttribute("phNum", user.getPhNum());

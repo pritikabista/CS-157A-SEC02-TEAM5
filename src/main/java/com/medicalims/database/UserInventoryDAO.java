@@ -58,6 +58,23 @@ public class UserInventoryDAO {
         return executeQuery(sql_query);
     }
 
+    //users see the items that are gonna expire in a week
+    public List<InventoryItem> getInventoryItemsExpiringInAWeek(){
+        String sql_query = "SELECT * FROM Inventory v JOIN Items t ON v.Item_Reference_Number = t.Item_Reference_Number "+
+                            "WHERE t.Expiration_Date >= CURDATE() AND t.Expiration_Date <= DATE_ADD(CURDATE(), INTERVAL 7 DAY)";  
+                            //CURDATE() = today
+                            //DATE_ADD(..., INTERVAL 7 DAY) = 7 days from cur date
+        return executeQuery(sql_query); 
+    }
+
+    //users see the items that are low in Stock (have less than 10 stocks)
+    public List<InventoryItem> getInventoryItemsLowInStock(){ 
+        String sql_query = "SELECT * FROM Inventory v JOIN Items t ON v.Item_Reference_Number = t.Item_Reference_Number "+
+                            "WHERE v.Stock < 10"; 
+
+        return executeQuery(sql_query);
+    }
+
     //User will be able to withdraw items //a method that first check whether the item 
     public boolean withdrawItem(int itemReferenceNum, int qty, int locationID){ //had to use locationID because items can exist in multiple locations
         String sql_query = "UPDATE Inventory SET Stock = Stock - ? " +
