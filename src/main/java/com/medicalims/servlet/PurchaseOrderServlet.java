@@ -36,7 +36,7 @@ public class PurchaseOrderServlet extends HttpServlet{
             return;
         }
 
-        //load items here to let the user pick from dropdown menu and forward it (LATER)
+        //load items here to let the user pick from dropdown menu and forward it
         UserInventoryDAO userInventoryDAO = new UserInventoryDAO(); 
         List<InventoryItem> inventoryItems;
 
@@ -73,13 +73,30 @@ public class PurchaseOrderServlet extends HttpServlet{
         }
 
         //get form submission
+        String userInput = request.getParameter("search");
+
+        UserInventoryDAO userInventoryDAO = new UserInventoryDAO(); 
+        List<InventoryItem> inventoryItems;
+        if (userInput == null || userInput.trim().isEmpty()){
+            inventoryItems = null; //when search is empty, user won't see the table 
+        }
+        else{
+            userInput = userInput.trim();
+            inventoryItems = userInventoryDAO.searchInventoryItems(userInput);
+        }
+
+        request.setAttribute("search", userInput);
+        request.setAttribute("items", inventoryItems);
+
+
+
         String itemReferenceNumString = request.getParameter("itemReferenceNum");
         String qtyString = request.getParameter("quantity");
         String message = request.getParameter("message");
 
+
         if (itemReferenceNumString == null || qtyString == null || message == null){
             request.setAttribute("error", "Input cannot be null!");
-            //set items again here!!
             request.getRequestDispatcher("/pages/user-request-purchaseOrder.jsp").forward(request, response);
             return;
         }
@@ -90,7 +107,6 @@ public class PurchaseOrderServlet extends HttpServlet{
 
         if (itemReferenceNumString.isEmpty() || qtyString.isEmpty() || message.isEmpty()){
             request.setAttribute("error", "Input cannot be empty!");
-            //set items again here!! (LATER)
             request.getRequestDispatcher("/pages/user-request-purchaseOrder.jsp").forward(request, response);
             return;
         }
@@ -103,7 +119,6 @@ public class PurchaseOrderServlet extends HttpServlet{
             qty = Integer.parseInt(qtyString);
         }catch (NumberFormatException e) {
             request.setAttribute("error", "Item reference number and quantity must be integers");
-            //set items here again!!! (LATER)
             request.getRequestDispatcher("/pages/user-request-purchaseOrder.jsp").forward(request, response);
             return;
         }
@@ -111,13 +126,12 @@ public class PurchaseOrderServlet extends HttpServlet{
         //check if the quantity is valid
         if(qty <=0){
             request.setAttribute("error", "Quantity must be greater than 0!");
-            //set items here again!!! (LATER)
             request.getRequestDispatcher("/pages/user-request-purchaseOrder.jsp").forward(request, response);
             return;
         }
 
         //check if item exists in the inventory using InventoryDAO  (LATER)
-
+            //we know that item exists since we make the user choose an item from the tale 
        
 
         //call PurchaseOrderDAO and insert a new purchase order using insertPurchaseOrder()
@@ -126,7 +140,6 @@ public class PurchaseOrderServlet extends HttpServlet{
 
         if (!inserted){
             request.setAttribute("error", "Error submitting the request, Please try again!");
-            //set items again here!!
             request.getRequestDispatcher("/pages/user-request-purchaseOrder.jsp").forward(request, response);
             return;
         }

@@ -39,11 +39,11 @@ public class PurchaseOrderDAO {
     }
             
     public boolean insertPurchaseOrder(int itemReferenceNum,String message, int qty, int userID){ //user create a new purcharseorder (insert it into the database, purchaseOrder table and Requests table
-        int approvedBy = 0;
+        //int approvedBy = 0; don't insert anything, allow Null 
         String status = "PENDING";
 
-        String sql_query = "INSERT INTO Purchase_orders (Item_Reference_Number, Status, Approved_By, Message, Qty) Values (?, ?, ?, ?, ?)";
-        int orderID = executeInsertion(sql_query, itemReferenceNum, status, approvedBy, message, qty);
+        String sql_query = "INSERT INTO Purchase_orders (Item_Referen`ce_Number, Status, Message, Qty) Values (?, ?, ?, ?)";
+        int orderID = executeInsertion(sql_query, itemReferenceNum, status, message, qty);
 
         if (orderID == -1){ //insertion to the Purchase Order fails
             return false;
