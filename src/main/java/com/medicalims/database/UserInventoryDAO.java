@@ -9,8 +9,6 @@ import java.util.List;
 
 import com.medicalims.util.DBConnection;
 
-import com.medicalims.model.Item;
-import com.medicalims.model.Inventory;
 import com.medicalims.model.InventoryItem;
 
 
@@ -27,25 +25,36 @@ public class UserInventoryDAO {
 
     //user will view all the items when he first click "View the inventory"
     public List<InventoryItem> getAllInventoryItemsToDisplay() {
-        String sql_query = "SELECT * FROM Inventory v JOIN Items t ON v.Item_Reference_Number = t.Item_Reference_Number";
+        String sql_query = "SELECT * FROM Inventory v JOIN Items t ON v.Item_Reference_Number = t.Item_Reference_Number "+
+                            "JOIN Categories c ON t.Category_ID = c.Category_ID "+
+                            "JOIN Locations l ON l.Location_ID = v.Location_ID";
         return executeQuery(sql_query);
     }
 
     //User can sort the items with specified locations
     public List<InventoryItem> getAllInventoryItemsByLocation(int locationID) {
-        String sql_query = "SELECT * FROM Inventory v JOIN Items t ON v.Item_Reference_Number = t.Item_Reference_Number WHERE v.Location_ID = ?";
+        String sql_query = "SELECT * FROM Inventory v JOIN Items t ON v.Item_Reference_Number = t.Item_Reference_Number " +
+                            "JOIN Categories c ON t.Category_ID = c.Category_ID "+
+                            "JOIN Locations l ON l.Location_ID = v.Location_ID " +
+                            "WHERE v.Location_ID = ?";
         return executeQuery(sql_query, locationID);
     }
 
     //User can see the items with lot number 
     public List<InventoryItem> getAllInventoryItemsByLotNumber(int lotNumber){
-        String sql_query = "SELECT * FROM Inventory v JOIN Items t ON v.Item_Reference_Number = t.Item_Reference_Number WHERE t.Lot_Number = ?";
+        String sql_query = "SELECT * FROM Inventory v JOIN Items t ON v.Item_Reference_Number = t.Item_Reference_Number " +
+                            "JOIN Categories c ON t.Category_ID = c.Category_ID "+
+                            "JOIN Locations l ON l.Location_ID = v.Location_ID " +
+                            "WHERE t.Lot_Number = ?";
         return executeQuery(sql_query, lotNumber);
     }
 
     //Users will see the items with the nearest expiration date first
     public List<InventoryItem> getAllInventoryItemsByNearestExpirationDate(){
-        String sql_query = "SELECT * From Inventory v JOIN Items t ON v.Item_Reference_Number = t.Item_Reference_Number ORDER BY t.Expiration_Date ASC"; //earliest expiration date at the top, later dates at the bottom
+        String sql_query = "SELECT * From Inventory v JOIN Items t ON v.Item_Reference_Number = t.Item_Reference_Number " +
+                            "JOIN Categories c ON t.Category_ID = c.Category_ID "+
+                            "JOIN Locations l ON l.Location_ID = v.Location_ID " +
+                            "ORDER BY t.Expiration_Date ASC"; //earliest expiration date at the top, later dates at the bottom
         return executeQuery(sql_query);
     }
 
@@ -62,6 +71,8 @@ public class UserInventoryDAO {
         try{
             int itemReferenceNum = Integer.parseInt(userInput);
             String sql_query = "SELECT * FROM Inventory v JOIN Items t ON v.Item_Reference_Number = t.Item_Reference_Number " +
+                                "JOIN Categories c ON c.Category_ID = t.Category_ID "+
+                                "JOIN Locations l ON l.Location_ID = v.Location_ID " +
                                 "WHERE t.Item_Reference_Number = ?";
             return executeQuery(sql_query, itemReferenceNum);
         }catch (NumberFormatException e){
@@ -71,6 +82,7 @@ public class UserInventoryDAO {
         String userInputString = "%" + userInput + "%"; 
         String sql_query = "SELECT * FROM Inventory v JOIN Items t ON v.Item_Reference_Number = t.Item_Reference_Number " +
                             "JOIN Categories c ON c.Category_ID = t.Category_ID " + 
+                            "JOIN Locations l ON l.Location_ID = v.Location_ID " +
                             "WHERE t.Item_Name LIKE ? " +
                             "OR c.Category_Name LIKE ? ";
         return executeQuery(sql_query, userInputString, userInputString);
@@ -91,16 +103,19 @@ public class UserInventoryDAO {
             ResultSet rs = stmt.executeQuery();
 
             while(rs.next()){
-                int locationID = rs.getInt("Location_ID");
+                int buildingNum = rs.getInt("Building_Number");
+                int roomNum = rs.getInt("Room_Number"); 
                 int itemReferenceNum = rs.getInt("Item_Reference_Number");
                 int stock = rs.getInt("Stock");
 
-                int categoryID = rs.getInt("Category_ID");
+                String categoryName = rs.getString("Category_Name");
                 int lotNumber = rs.getInt("Lot_Number");
                 String itemName = rs.getString("Item_Name");
                 Date expirationDate = rs.getDate("Expiration_Date");
+
+                String location = "B" + buildingNum + "-R" + roomNum; //B1-R103 = building 1, room 103 (first floor)
             
-                inventoryItems.add(new InventoryItem(itemReferenceNum, categoryID, lotNumber, itemName, expirationDate, locationID, stock));
+                inventoryItems.add(new InventoryItem(itemReferenceNum, categoryName, lotNumber, itemName, expirationDate, location, stock));
             }
 
             rs.close(); //clean up ***** below
