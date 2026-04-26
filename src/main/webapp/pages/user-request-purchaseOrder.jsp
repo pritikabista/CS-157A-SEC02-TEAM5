@@ -1,10 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="java.util.List" %>
-<%@ page import="com.medicalims.model.Item" %>
-
-
-<%-- Temp, chatgpted frontend --%>
-
+<%@ page import="com.medicalims.model.InventoryItem" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -13,6 +9,66 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>User Request</title>
   <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css" />
+
+  <style>
+    .search-box {
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+
+    .search-box input[type="text"] {
+      width: 320px;
+      padding: 8px;
+      font-size: 14px;
+    }
+
+    .search-box button {
+      padding: 8px 12px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .search-box a {
+      margin-left: 10px;
+      text-decoration: none;
+      color: #007bff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+      margin-bottom: 20px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #343a40;
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    .clickable-row {
+      cursor: pointer;
+    }
+
+    .clickable-row:hover {
+      background-color: #eef3f7 !important;
+    }
+
+    .no-data {
+      text-align: center;
+      padding: 20px;
+    }
+  </style>
 </head>
 <body>
   <div class="page main">
@@ -29,6 +85,11 @@
       String success = (String) request.getAttribute("success");
       String infoMessage = (String) request.getAttribute("message");
 
+      String search = (String) request.getAttribute("search");
+      if (search == null) {
+          search = "";
+      }
+
       String selectedItemReferenceNum = request.getParameter("itemReferenceNum") != null
               ? request.getParameter("itemReferenceNum")
               : "";
@@ -41,7 +102,9 @@
               ? request.getParameter("message")
               : "";
 
-      List<Item> items = (List<Item>) request.getAttribute("items");
+      List<InventoryItem> items = (List<InventoryItem>) request.getAttribute("items");
+
+      boolean hasSearched = search != null && !search.trim().isEmpty();
     %>
 
     <% if (error != null) { %>
@@ -56,41 +119,73 @@
       <div class="card" style="margin-top: 16px;"><%= infoMessage %></div>
     <% } %>
 
+    <div class="search-box">
+      <form action="<%= request.getContextPath() %>/user-purchaseOrder" method="get">
+        <input
+            type="text"
+            name="search"
+            placeholder="Search by item name, item ref #, or category name"
+            value="<%= search %>">
+
+        <button type="submit">Search</button>
+        <a href="<%= request.getContextPath() %>/user-purchaseOrder">Reset</a>
+      </form>
+    </div>
+
+    <% if (hasSearched) { %>
+      <div style="margin-bottom: 10px; font-weight: bold; color: #555;">
+        Click on an item from the table below to select it.
+       </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Item Ref #</th>
+            <th>Item Name</th>
+            <th>Category</th>
+            <th>Lot #</th>
+            <th>Expiration Date</th>
+            <th>Quantity</th>
+            <th>Location</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (items != null && !items.isEmpty()) { %>
+            <% for (InventoryItem item : items) { %>
+              <tr class="clickable-row"
+                  onclick="selectItem('<%= item.getItemReferenceNumber() %>')">
+                <td><%= item.getItemReferenceNumber() %></td>
+                <td><%= item.getItemName() %></td>
+                <td><%= item.getCategoryName() %></td>
+                <td><%= item.getLotNumber() %></td>
+                <td><%= item.getExpirationDate() != null ? item.getExpirationDate() : "" %></td>
+                <td><%= item.getStock() %></td>
+                <td><%= item.getLocation() %></td>
+              </tr>
+            <% } %>
+          <% } else { %>
+            <tr>
+              <td colspan="7" class="no-data">No matching items found.</td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    <% } %>
+
     <div class="form-card">
       <form id="requestForm" method="post" action="<%= request.getContextPath() %>/user-purchaseOrder">
         <div class="form-group">
-          <label for="itemSearch">Search Item</label>
+          <label for="itemReferenceNum">Selected Item Reference Number</label>
+          <div style="font-size: 13px; color: #777; margin-bottom: 6px;">
+          Please select an item from the table above.
+          </div>
           <input
-              type="text"
-              id="itemSearch"
-              placeholder="Search by item name or reference number"
-              autocomplete="off"
-              required
-          />
-
-          <input
-              type="hidden"
+              type="number"
               id="itemReferenceNum"
               name="itemReferenceNum"
               value="<%= selectedItemReferenceNum %>"
+              readonly
               required
           />
-
-          <div id="itemDropdown" class="card" style="margin-top: 8px; max-height: 220px; overflow-y: auto; display: none; padding: 0;">
-            <% if (items != null) {
-                 for (Item item : items) { %>
-                   <div
-                     class="item-option"
-                     data-ref="<%= item.getItemReferenceNumber() %>"
-                     data-name="<%= item.getItemName() %>"
-                     style="padding: 12px 16px; cursor: pointer; border-bottom: 1px solid #e5e7eb;"
-                   >
-                     <strong><%= item.getItemName() %></strong>
-                     <span style="margin-left: 8px; color: #666;">(#<%= item.getItemReferenceNumber() %>)</span>
-                   </div>
-            <%   }
-               } %>
-          </div>
         </div>
 
         <div class="form-group">
@@ -123,64 +218,10 @@
   </div>
 
   <script>
-    const itemSearch = document.getElementById("itemSearch");
-    const itemDropdown = document.getElementById("itemDropdown");
-    const itemReferenceNum = document.getElementById("itemReferenceNum");
-    const itemOptions = document.querySelectorAll(".item-option");
-    const requestForm = document.getElementById("requestForm");
-
-    itemSearch.addEventListener("focus", function () {
-      itemDropdown.style.display = "block";
-      filterItems();
-    });
-
-    itemSearch.addEventListener("input", function () {
-      itemReferenceNum.value = "";
-      itemDropdown.style.display = "block";
-      filterItems();
-    });
-
-    document.addEventListener("click", function (event) {
-      if (!itemSearch.contains(event.target) && !itemDropdown.contains(event.target)) {
-        itemDropdown.style.display = "none";
-      }
-    });
-
-    itemOptions.forEach(function (option) {
-      option.addEventListener("click", function () {
-        const ref = option.getAttribute("data-ref");
-        const name = option.getAttribute("data-name");
-
-        itemSearch.value = name + " (#" + ref + ")";
-        itemReferenceNum.value = ref;
-        itemDropdown.style.display = "none";
-      });
-    });
-
-    requestForm.addEventListener("submit", function (event) {
-      if (itemReferenceNum.value.trim() === "") {
-        event.preventDefault();
-        alert("Please select a valid item from the dropdown.");
-      }
-    });
-
-    function filterItems() {
-      const keyword = itemSearch.value.toLowerCase().trim();
-      let hasVisibleItems = false;
-
-      itemOptions.forEach(function (option) {
-        const ref = option.getAttribute("data-ref").toLowerCase();
-        const name = option.getAttribute("data-name").toLowerCase();
-        const matches = name.includes(keyword) || ref.includes(keyword);
-
-        option.style.display = matches ? "block" : "none";
-
-        if (matches) {
-          hasVisibleItems = true;
-        }
-      });
-
-      itemDropdown.style.display = hasVisibleItems ? "block" : "none";
+    function selectItem(itemReferenceNumber) {
+      const input = document.getElementById("itemReferenceNum");
+      input.value = itemReferenceNumber;
+      input.style.border = "2px solid #0f766e";
     }
   </script>
 
