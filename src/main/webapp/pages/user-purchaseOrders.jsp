@@ -1,4 +1,4 @@
-<%---jsp when user click the "view my requsts" --%>
+<%---jsp when user click the "view my requests" --%>
 <%-- see DisplayUserPurchaseOrdersServlet --%>
 
 <%-- Temp, chatgpted frontend --%>
@@ -46,7 +46,7 @@
     <% } %>
 
     <div class="form-card" style="margin-top: 16px;">
-        <form method="get" action="<%= request.getContextPath() %>/user-purchaseOrders">
+        <form method="get" action="<%= request.getContextPath() %>/user-myRequests">
             <div class="form-group">
                 <label for="status">Filter by Status</label>
                 <select id="status" name="status">
@@ -59,7 +59,7 @@
 
             <div class="form-actions">
                 <button type="submit" class="primary-btn">Apply Filter</button>
-                <a href="<%= request.getContextPath() %>/user-purchaseOrders" class="secondary-btn">
+                <a href="<%= request.getContextPath() %>/user-myRequests" class="secondary-btn">
                     Clear Filter
                 </a>
             </div>
@@ -88,7 +88,7 @@
                     <% for (PurchaseOrder order : purchaseOrders) { %>
                         <tr>
                             <td><%= order.getOrderID() %></td>
-                            <td><%= order.getItemReferenceNumber() %></td>
+                            <td><%= order.getItemReferenceNum() %></td>
                             <td><%= order.getQty() %></td>
                             <td><%= order.getMessage() %></td>
                             <td><%= order.getStatus() %></td>

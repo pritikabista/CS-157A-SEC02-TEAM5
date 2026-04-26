@@ -36,25 +36,7 @@
           />
         </div>
 
-        <div class="form-group">
-          <label for="departmentId">Department ID</label>
-          <input
-            type="text"
-            id="departmentId"
-            name="departmentId"
-            placeholder="Enter department ID"
-            required
-          />
-        </div>
-
-        <div class="form-group">
-          <label for="role">Role</label>
-          <select id="role" name="role" required>
-            <option value="User">User</option>
-            <option value="Admin">Admin</option>
-          </select>
-        </div>
-
+        
         <div class="form-actions">
           <button type="submit">Login</button>
           <button

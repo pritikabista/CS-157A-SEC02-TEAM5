@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page import="com.medicalims.model.User" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,6 +24,7 @@
       String error = (String) request.getAttribute("error");
       String success = (String) request.getAttribute("success");
       String message = (String) request.getAttribute("message");
+      User user = (User) session.getAttribute("user");
     %>
 
     <% if (error != null) { %>
@@ -41,7 +43,9 @@
       <section class="hero-card">
         <div>
           <p class="hero-label">Employee Portal</p>
-          <h1>User Dashboard</h1>
+          <h1>Welcome, <%= user.getUsername() %></h1>
+          <p class="hero-text">Account ID: <%= user.getAccountID() %></p>
+          <p class="hero-text">Department ID: <%= user.getDepartmentID() %></p>
           <p class="hero-text">Track inventory, review item status, and submit requests for your department.</p>
         </div>
 
