@@ -43,8 +43,8 @@
         </div>
         <div class="hero-actions">
           <button class="primary-btn" onclick="window.location.href='user-inventory.jsp'">View Inventory</button>
-          <button onclick="window.location.href='${pageContext.request.contextPath}/purchase-order'">View My Requests</button>
-          <button class="secondary-btn" onclick="window.location.href='user-request.jsp'">Request Item</button>
+          <button onclick="window.location.href='<%= request.getContextPath() %>/user-purchaseOrders'">View My Requests</button>
+          <button class="secondary-btn" onclick="window.location.href='user-purchaseOrder'">Request Item</button>
         </div>
       </section>
 
