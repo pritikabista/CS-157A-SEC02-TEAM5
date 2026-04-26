@@ -216,7 +216,7 @@
 
     <div class="top-bar">
         <h1>Inventory</h1>
-        <a class="back-link" href="<%= request.getContextPath() %>/pages/user-dashboard.jsp">Back to Dashboard</a>
+        <a class="back-link" href="<%= request.getContextPath() %>/user-dashboard">Back to Dashboard</a>
     </div>
 
     <div class="search-box">

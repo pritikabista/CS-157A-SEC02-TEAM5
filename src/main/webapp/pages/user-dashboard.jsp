@@ -75,19 +75,19 @@
       <section class="dashboard-stats">
         <div class="stat-card">
           <span class="stat-title">Low Stock Items</span>
-          <span class="stat-number low-text">4</span>
+         <span class="stat-number low-text"><%= request.getAttribute("lowStockCount") %></span>
           <span class="stat-note">Needs attention</span>
         </div>
 
         <div class="stat-card">
           <span class="stat-title">Expiring Soon</span>
-          <span class="stat-number warn-text">3</span>
+         <span class="stat-number warn-text"><%= request.getAttribute("expiringSoonCount") %></span>
           <span class="stat-note">Use FEFO first</span>
         </div>
 
         <div class="stat-card">
           <span class="stat-title">My Requests</span>
-          <span class="stat-number">2</span>
+         <span class="stat-number"><%= request.getAttribute("myRequestsCount") %></span>
           <span class="stat-note">Pending review</span>
         </div>
       </section>
