@@ -99,6 +99,9 @@ public class InventoryServlet extends HttpServlet {
 
     @Override 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        String withdraw = request.getParameter("action");
+
         String userInput = request.getParameter("search");
 
         String filterType = request.getParameter("filterType");
@@ -108,12 +111,38 @@ public class InventoryServlet extends HttpServlet {
         UserInventoryDAO userInventoryDAO = new UserInventoryDAO(); 
         List<InventoryItem> inventoryItems;
 
+        boolean withdrawEmpty = (withdraw == null || withdraw.trim().isEmpty());
         boolean searchEmpty = (userInput == null || userInput.trim().isEmpty());
         boolean filterTypeEmpty = (filterType == null || filterType.trim().isEmpty());
         boolean filterValueEmpty = (filterValue == null || filterValue.trim().isEmpty());
 
-        
-        if(!searchEmpty){ //user used the search bar
+        if(!withdrawEmpty){ //user click withdraw button 
+            String itemReferenceNumberString = request.getParameter("itemReferenceNumber");
+            String locationIDString = request.getParameter("locationID");
+            String qtyStr = request.getParameter("qty");
+
+            try{
+                int itemReferenceNumber = Integer.parseInt(itemReferenceNumberString);
+                int locationID = Integer.parseInt(locationIDString);
+                int qty = Integer.parseInt(qtyStr);
+
+                if (qty <= 0){
+                    request.setAttribute("errorMessage", "Withdrawal quantity must be greater than 0");
+                }
+                else{
+                    boolean success = userInventoryDAO.withdrawItem(itemReferenceNumber, qty, locationID); //we should call withdraw_logDAO to log the withdrawl
+
+                    if (!success){
+                        request.setAttribute("errorMessage", "Not enough stock available for withdrawl");
+                    }
+                }
+            }catch (NumberFormatException e){
+                request.setAttribute("errorMessage", "Quantity must be an integer!");
+            }
+
+              inventoryItems = userInventoryDAO.getAllInventoryItemsToDisplay(); 
+        }
+        else if(!searchEmpty){ //user used the search bar
             userInput = userInput.trim();
             inventoryItems = userInventoryDAO.searchInventoryItems(userInput);
         }
