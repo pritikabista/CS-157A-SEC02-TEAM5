@@ -77,7 +77,10 @@
         <h2>Submit Request</h2>
         <p>Request purchase or reorder for a selected item.</p>
       </div>
-      <a href="<%= request.getContextPath() %>/inventory" class="secondary-btn">Back to Inventory</a>
+      <div style="display: flex; gap: 10px;">
+        <a href="<%= request.getContextPath() %>/user-dashboard" class="secondary-btn">Dashboard</a>
+        <a href="<%= request.getContextPath() %>/inventory" class="secondary-btn">Back to Inventory</a>
+      </div>
     </div>
 
     <%
