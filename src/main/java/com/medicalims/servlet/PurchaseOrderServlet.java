@@ -4,9 +4,12 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
+import java.util.List;
 
+import com.medicalims.model.InventoryItem;
 import com.medicalims.model.User;
 import com.medicalims.database.PurchaseOrderDAO;
+import com.medicalims.database.UserInventoryDAO;
 
 @WebServlet("/user-purchaseOrder")
 public class PurchaseOrderServlet extends HttpServlet{
@@ -34,6 +37,21 @@ public class PurchaseOrderServlet extends HttpServlet{
         }
 
         //load items here to let the user pick from dropdown menu and forward it (LATER)
+        UserInventoryDAO userInventoryDAO = new UserInventoryDAO(); 
+        List<InventoryItem> inventoryItems;
+
+        String userInput = request.getParameter("search");
+
+        if (userInput == null || userInput.trim().isEmpty()){
+            inventoryItems = null; //when search is empty, user won't see the table 
+        }
+        else{
+            userInput = userInput.trim();
+            inventoryItems = userInventoryDAO.searchInventoryItems(userInput);
+        }
+
+        request.setAttribute("search", userInput);
+        request.setAttribute("items", inventoryItems);
         request.getRequestDispatcher("/pages/user-request-purchaseOrder.jsp").forward(request, response); 
     
     }
