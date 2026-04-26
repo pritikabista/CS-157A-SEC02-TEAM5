@@ -236,6 +236,7 @@
                 <option value="location" <%= "location".equals(filterType) ? "selected" : "" %>>By Location</option>
                 <option value="lot" <%= "lot".equals(filterType) ? "selected" : "" %>>By Lot Number</option>
                 <option value="expiration" <%= "expiration".equals(filterType) ? "selected" : "" %>>Nearest Expiration Date</option>
+                <option value="lowStock" <%= "lowStock".equals(filterType) ? "selected" : "" %>>Low Stock</option>
             </select>
 
             <span id="filterValueContainer"></span>

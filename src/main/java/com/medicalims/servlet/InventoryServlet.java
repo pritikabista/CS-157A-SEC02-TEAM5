@@ -179,6 +179,10 @@ public class InventoryServlet extends HttpServlet {
                     inventoryItems = userInventoryDAO.getAllInventoryItemsByNearestExpirationDate();
                     break;
 
+                case "lowStock":
+                    inventoryItems = userInventoryDAO.getInventoryItemsLowInStock();
+                    break;
+
                 default: 
                     inventoryItems = userInventoryDAO.getAllInventoryItemsToDisplay();
             }

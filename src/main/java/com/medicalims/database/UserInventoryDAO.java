@@ -61,6 +61,8 @@ public class UserInventoryDAO {
     //users see the items that are gonna expire in a week
     public List<InventoryItem> getInventoryItemsExpiringInAWeek(){
         String sql_query = "SELECT * FROM Inventory v JOIN Items t ON v.Item_Reference_Number = t.Item_Reference_Number "+
+                            "JOIN Categories c ON t.Category_ID = c.Category_ID "+
+                            "JOIN Locations l ON l.Location_ID = v.Location_ID " +
                             "WHERE t.Expiration_Date >= CURDATE() AND t.Expiration_Date <= DATE_ADD(CURDATE(), INTERVAL 7 DAY)";  
                             //CURDATE() = today
                             //DATE_ADD(..., INTERVAL 7 DAY) = 7 days from cur date
@@ -70,6 +72,8 @@ public class UserInventoryDAO {
     //users see the items that are low in Stock (have less than 10 stocks)
     public List<InventoryItem> getInventoryItemsLowInStock(){ 
         String sql_query = "SELECT * FROM Inventory v JOIN Items t ON v.Item_Reference_Number = t.Item_Reference_Number "+
+                            "JOIN Categories c ON t.Category_ID = c.Category_ID "+
+                            "JOIN Locations l ON l.Location_ID = v.Location_ID " +
                             "WHERE v.Stock < 10"; 
 
         return executeQuery(sql_query);
