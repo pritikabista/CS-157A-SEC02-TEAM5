@@ -56,6 +56,7 @@ public class DisplayUserPurchaseOrdersServlet extends HttpServlet{
             }
         }
 
+        request.setAttribute("selectedStatus", statusString);
         request.setAttribute("purchaseOrders", purchaseOrders);
         request.getRequestDispatcher("/pages/user-purchaseOrders.jsp").forward(request, response); 
     }
