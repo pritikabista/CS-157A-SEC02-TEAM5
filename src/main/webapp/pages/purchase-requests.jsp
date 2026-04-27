@@ -117,11 +117,9 @@
                         <thead>
                             <tr>
                                 <th>Order ID</th>
-                                <th>Item Reference #</th>
+                                <th>Username</th>
+                                <th>Item Name</th>
                                 <th>Quantity</th>
-                                <th>Message</th>
-                                <th>Status</th>
-                                <th>Approved By</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -129,13 +127,9 @@
                             <% for (PurchaseOrder order : purchaseOrders) { %>
                                 <tr class="clickable-row" onclick="toggleExpand('order-<%= order.getOrderID() %>')">
                                     <td><%= order.getOrderID() %></td>
-                                    <td><%= order.getItemReferenceNum() %></td>
+                                    <td><%= order.getUsername() %></td>
+                                    <td><%= order.getItemName() %></td>
                                     <td><%= order.getQty() %></td>
-                                    <td><%= order.getMessage() %></td>
-                                    <td><%= order.getStatus() %></td>
-                                    <td>
-                                        <%= order.getApprovedBy() == 0 ? "Not yet approved" : order.getApprovedBy() %>
-                                    </td>
                                     <td>
                                         <button type="button" class="secondary-btn" onclick="toggleExpandButton(event, 'order-<%= order.getOrderID() %>')">
                                             View
@@ -144,16 +138,31 @@
                                 </tr>
 
                                 <tr id="order-<%= order.getOrderID() %>" class="expanded-row">
-                                    <td colspan="7">
+                                    <td colspan="5">
                                         <div class="expanded-box">
-                                            <p><strong>Order ID:</strong> <%= order.getOrderID() %></p>
+                                            <p><strong>User ID:</strong> <%= order.getUserID() %></p>
                                             <p><strong>Item Reference #:</strong> <%= order.getItemReferenceNum() %></p>
-                                            <p><strong>Quantity:</strong> <%= order.getQty() %></p>
                                             <p><strong>Message:</strong> <%= order.getMessage() %></p>
-                                            <p><strong>Status:</strong> <%= order.getStatus() %></p>
                                             <p><strong>Approved By:</strong> <%= order.getApprovedBy() == 0 ? "Not yet approved" : order.getApprovedBy() %></p>
+                                            <p><strong>Status:</strong> <%= order.getStatus() %></p>
 
                                             <div class="expanded-actions">
+                                                <form action="<%= request.getContextPath() %>/admin-purchaseOrder" method="post" style="display:inline;">
+                                                    <input type="hidden" name="action" value="approve">
+                                                    <input type="hidden" name="orderID" value="<%= order.getOrderID() %>">
+                                                    <button type="submit" class="primary-btn" onclick="event.stopPropagation();">
+                                                        Approve
+                                                    </button>
+                                                </form>
+
+                                                <form action="<%= request.getContextPath() %>/admin-purchaseOrder" method="post" style="display:inline;">
+                                                    <input type="hidden" name="action" value="deny">
+                                                    <input type="hidden" name="orderID" value="<%= order.getOrderID() %>">
+                                                    <button type="submit" class="gray-btn" onclick="event.stopPropagation();">
+                                                        Deny
+                                                    </button>
+                                                </form>
+
                                                 <button type="button" class="gray-btn" onclick="closeRow(event, 'order-<%= order.getOrderID() %>')">
                                                     Close
                                                 </button>
