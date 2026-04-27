@@ -63,6 +63,12 @@ public class PurchaseOrderDAO {
         return executeQuery(sql_query, userID, status.toString());
     }
 
+    public List<PurchaseOrder> getPurchaseOrdersByStatusForAdmin(OrderStatus status){
+        String sql_query = "SELECT * FROM Purchase_orders p JOIN Requests r ON p.Order_ID = r.Order_ID " + 
+                            "WHERE p.Status = ?";
+        return executeQuery(sql_query, status.toString()); 
+    }
+
     
     private List<PurchaseOrder> executeQuery(String sql_query, Object... params){ //Object = variable number of parameters
         List<PurchaseOrder> purchaseOrders = new ArrayList<>(); 
