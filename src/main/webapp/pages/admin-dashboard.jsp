@@ -1,13 +1,22 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page import="com.medicalims.model.Admin" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Dashboard</title>
-  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css" />
 </head>
+
 <body>
+  <%
+  Admin admin = (Admin) session.getAttribute("admin");
+        if (admin == null) {
+          response.sendRedirect(request.getContextPath() + "/logout");
+          return;
+        }
+  %>
   <div class="layout">
     <aside class="sidebar">
       <h2>MedIMS Admin</h2>
@@ -18,14 +27,16 @@
         <a href="orders.jsp">Orders</a>
         <a href="supplier-info.jsp">Supplier Info</a>
         <a href="add-item.jsp">Add Item</a>
-        <a href="../login.jsp">Logout</a>
+        <a href="${pageContext.request.contextPath}/logout">Logout</a> 
       </nav>
     </aside>
 
     <main class="main">
       <div class="topbar">
         <div>
-          <h1>Admin Dashboard</h1>
+          <p class="hero-label">Admin Dashboard</p>
+          <h1>Welcome, <%= admin.getUsername() %></h1>
+          <p class="hero-text">Account ID: <%= admin.getAccountID() %></p>
           <p>Manage inventory, requests, orders, and suppliers.</p>
         </div>
       </div>

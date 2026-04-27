@@ -64,7 +64,7 @@ public class LoginServlet extends HttpServlet {
             //key = "admin", value = Admin object 
             session.setAttribute("admin", currAdmin); 
             session.setAttribute("role", "admin");
-            response.sendRedirect(request.getContextPath() + "/pages/admin-dashboard.jsp"); //request.getContextPath() starts from webapp root
+            response.sendRedirect(request.getContextPath() + "/admin-dashboard"); //goes to servlet first 
         }
         else{
             session.setAttribute("user", currUser);
