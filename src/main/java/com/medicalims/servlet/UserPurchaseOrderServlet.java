@@ -12,7 +12,7 @@ import com.medicalims.database.PurchaseOrderDAO;
 import com.medicalims.database.UserInventoryDAO;
 
 @WebServlet("/user-purchaseOrder")
-public class PurchaseOrderServlet extends HttpServlet{
+public class UserPurchaseOrderServlet extends HttpServlet{
     //doGet = handles page loading
         //load items so user can see/search and choose items from dropdown menu
     //doPost = handles form submissing
