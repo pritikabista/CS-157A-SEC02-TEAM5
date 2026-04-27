@@ -21,13 +21,13 @@
     <aside class="sidebar">
       <h2>MedIMS Admin</h2>
       <nav>
-        <a href="admin-dashboard.jsp">Dashboard</a>
-        <a href="admin-inventory.jsp">Inventory</a>
-        <a href="purchase-requests.jsp">Purchase Requests</a>
-        <a href="orders.jsp">Orders</a>
-        <a href="supplier-info.jsp">Supplier Info</a>
-        <a href="add-item.jsp">Add Item</a>
-        <a href="${pageContext.request.contextPath}/logout">Logout</a> 
+        <a href="<%= request.getContextPath() %>/admin-dashboard">Dashboard</a>
+        <a href="<%= request.getContextPath() %>/inventory">Inventory</a>
+        <a href="<%= request.getContextPath() %>/pages/purchase-requests.jsp">Purchase Requests</a>
+        <a href="<%= request.getContextPath() %>/pages/orders.jsp">Orders</a>
+        <a href="<%= request.getContextPath() %>/pages/supplier-info.jsp">Supplier Info</a>
+        <a href="<%= request.getContextPath() %>/pages/add-item.jsp">Add Item</a>
+        <a href="<%= request.getContextPath() %>/logout">Logout</a>
       </nav>
     </aside>
 
@@ -42,17 +42,17 @@
       </div>
 
       <div class="dashboard-grid">
-        <a href="admin-inventory.jsp" class="dashboard-tile">
+        <a href="<%= request.getContextPath() %>/inventory" class="dashboard-tile">
           <h3>Inventory</h3>
           <p class="note">View and update hospital inventory</p>
         </a>
 
-        <a href="purchase-requests.jsp" class="dashboard-tile">
+        <a href="<%= request.getContextPath() %>/pages/purchase-requests.jsp" class="dashboard-tile">
           <h3>Purchase Requests</h3>
           <p class="note">Review user requests</p>
         </a>
 
-        <a href="orders.jsp" class="dashboard-tile">
+        <a href="<%= request.getContextPath() %>/pages/orders.jsp" class="dashboard-tile">
           <h3>Orders</h3>
           <p class="note">Approve and update order status</p>
         </a>
