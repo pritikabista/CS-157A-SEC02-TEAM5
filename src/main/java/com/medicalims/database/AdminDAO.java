@@ -16,7 +16,9 @@ public class AdminDAO {
 
 
     public Admin getAdminIfExist(int accountID){
-        String sql_query = "SELECT * FROM Admins WHERE Account_ID = ?";
+        String sql_query = "SELECT * FROM Admins ad JOIN Accounts acc ON ad.Account_ID = acc.Account_ID " +
+                            "WHERE ad.Account_ID = ?";
+
         List<Admin> resultAdmin = executeQuery(sql_query, accountID);
 
         if (resultAdmin.isEmpty()){ //this account is not an admin
@@ -43,7 +45,7 @@ public class AdminDAO {
             while(rs.next()){
                 int accountID = rs.getInt("Account_ID");
                 int departmentID = rs.getInt("Department_ID");
-                int officeNum = rs.getInt("Office_Number");
+                String officeNum = rs.getString("Office_Number");
                 String username = rs.getString("Username");
                 String pwdHashed = rs.getString("Pwd_hashed");
 
