@@ -812,23 +812,3 @@ tbody tr.data-row:hover,
     font-size: 24px;
   }
 }
-
-.expandable-row {
-    display: none;
-    background-color: #eef3f7;
-}
-
-.expandable-content {
-    padding: 15px;
-}
-
-.expandable-content input[type="number"] {
-    padding: 6px;
-    margin-right: 10px;
-    width: 80px;
-}
-
-.expandable-content button {
-    padding: 6px 10px;
-    cursor: pointer;
-}

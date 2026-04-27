@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>User Request</title>
-  <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css" />
+  <link rel="stylesheet" href="../css/style.css" />
 </head>
 <body>
   <div class="page main">
@@ -14,7 +14,7 @@
         <h2>Submit Request</h2>
         <p>Request purchase or reorder for a selected item.</p>
       </div>
-      <a href="<%= request.getContextPath() %>/inventory"><button class="secondary">Back to Inventory</button></a>
+      <a href="user-inventory.jsp"><button class="secondary">Back to Inventory</button></a>
     </div>
 
     <%
@@ -29,7 +29,7 @@
     <% if (message != null) { %><div class="card" style="margin-top: 16px;"><%= message %></div><% } %>
 
     <div class="form-card">
-      <form id="requestForm" method="post" action="<%= request.getContextPath() %>/user-request">
+      <form id="requestForm" method="post" action="user-request">
         <div class="form-group">
           <label for="requestItem">Item</label>
           <input type="text" id="requestItem" name="itemName" value="<%= itemName %>" required />
@@ -57,6 +57,6 @@
     </div>
   </div>
 
-  <script src="<%= request.getContextPath() %>/js/script.js"></script>
+  <script src="../js/script.js"></script>
 </body>
 </html>
