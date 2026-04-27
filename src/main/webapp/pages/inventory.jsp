@@ -2,10 +2,13 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.medicalims.model.InventoryItem" %>
 <%@ page import="com.medicalims.model.User" %>
+<%@ page import="com.medicalims.model.Admin" %>
 
 <%
     User user = (User) session.getAttribute("user");
-    if (user == null) {
+    Admin admin = (Admin) session.getAttribute("admin");
+
+    if (user == null && admin == null) {
         response.sendRedirect(request.getContextPath() + "/pages/login.jsp");
         return;
     }
@@ -197,15 +200,19 @@
     <main class="main" style="margin-left: 0;">
         <div class="inventory-page">
             <div class="topbar">
+                <div>
+                    <h1>Inventory</h1>
+                    <p>View available medical inventory and withdraw items.</p>
+                </div>
+
                 <div class="topbar-links">
-                    <a href="<%= request.getContextPath() %>/user-dashboard" class="primary-btn">Dashboard</a>
+                    <% if (admin != null) { %>
+                        <a href="<%= request.getContextPath() %>/admin-dashboard" class="primary-btn">Dashboard</a>
+                    <% } else { %>
+                        <a href="<%= request.getContextPath() %>/user-dashboard" class="primary-btn">Dashboard</a>
+                    <% } %>
                     <a href="${pageContext.request.contextPath}/logout" class="secondary-btn">Logout</a>
                 </div>
-            </div>
-
-            <div>
-                <h1>Inventory</h1>
-                <p>View available medical inventory and withdraw items.</p>
             </div>
 
             <div class="card" style="margin-top: 20px;">
