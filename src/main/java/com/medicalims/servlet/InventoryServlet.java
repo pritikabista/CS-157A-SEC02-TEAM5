@@ -36,20 +36,38 @@ public class InventoryServlet extends HttpServlet {
             return;
         }
 
-        if(admin == null){}
         //load all the InventoryItems here
         UserInventoryDAO userInventoryDAO = new UserInventoryDAO(); 
         List<InventoryItem> inventoryItems = userInventoryDAO.getAllInventoryItemsToDisplay();
 
         request.setAttribute("inventoryItems", inventoryItems);
         request.getRequestDispatcher("/pages/inventory.jsp").forward(request, response);
-    
-
-       
     }
 
     @Override 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+
+        if (session == null){
+            response.sendRedirect(request.getContextPath() + "/pages/login.jsp");
+            return; 
+        }
+       
+        User user = (User)session.getAttribute("user");
+        Admin admin = (Admin)session.getAttribute("admin"); 
+
+        if (user == null && admin == null) {
+            response.sendRedirect(request.getContextPath() + "/pages/login.jsp");
+            return;
+        }
+
+        int accountID;
+
+        if(user == null){
+            accountID = admin.getAccountID();
+        }else{
+            accountID = user.getAccountID();
+        }
 
         String withdraw = request.getParameter("action");
 
@@ -81,7 +99,7 @@ public class InventoryServlet extends HttpServlet {
                     request.setAttribute("errorMessage", "Withdrawal quantity must be greater than 0");
                 }
                 else{
-                    boolean success = userInventoryDAO.withdrawItem(itemReferenceNumber, qty, locationID); //we should call withdraw_logDAO to log the withdrawl
+                    boolean success = userInventoryDAO.withdrawItem(itemReferenceNumber, qty, locationID, accountID); //we should call withdraw_logDAO to log the withdrawl
 
                     if (!success){
                         request.setAttribute("errorMessage", "Not enough stock available for withdrawl");
