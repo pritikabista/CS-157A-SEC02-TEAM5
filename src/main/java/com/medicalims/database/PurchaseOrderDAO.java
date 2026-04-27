@@ -23,8 +23,11 @@ public class PurchaseOrderDAO {
     //DONE == user can see the requests he made by specific status "PENDING", "APPROVED", "DENIED"
 
     public List<PurchaseOrder> getAllPurchaseOrders(){ //admin can see all the purchaseorder and their info (who made them)
-        String sql_query = "SELECT * FROM Purchase_orders p JOIN Requests r ON p.Order_ID = r.Order_ID";
-        return executeQuery(sql_query); 
+        String sql_query = "SELECT  p.Order_ID, p.Item_Reference_Number, p.Status, p.Approved_By, r.User_ID, p.Message, p.Qty, a.Username, t.Item_Name " + 
+                            "FROM Purchase_orders p JOIN Requests r ON p.Order_ID = r.Order_ID " +
+                            "JOIN Accounts a ON r.User_ID = a.Account_ID " + 
+                            "JOIN Items t ON t.Item_Reference_Number = p.Item_Reference_Number";
+        return executeQueryForAdmins(sql_query); 
     }
 
     public boolean approvePurchaseOrders(int orderID, int accountID){ // //admin can approve the request (accountID here is an Admin ID )
@@ -64,9 +67,12 @@ public class PurchaseOrderDAO {
     }
 
     public List<PurchaseOrder> getPurchaseOrdersByStatusForAdmin(OrderStatus status){
-        String sql_query = "SELECT * FROM Purchase_orders p JOIN Requests r ON p.Order_ID = r.Order_ID " + 
+        String sql_query = "SELECT p.Order_ID, p.Item_Reference_Number, p.Status, p.Approved_By, r.User_ID, p.Message, p.Qty, a.Username, t.Item_Name " + 
+                            "FROM Purchase_orders p JOIN Requests r ON p.Order_ID = r.Order_ID " + 
+                            "JOIN Accounts a ON r.User_ID = a.Account_ID " + 
+                            "JOIN Items t ON t.Item_Reference_Number = p.Item_Reference_Number " +
                             "WHERE p.Status = ?";
-        return executeQuery(sql_query, status.toString()); 
+        return executeQueryForAdmins(sql_query, status.toString()); 
     }
 
     
@@ -93,7 +99,7 @@ public class PurchaseOrderDAO {
                 String message = rs.getString("Message");
                 int qty = rs.getInt("Qty");
 
-                purchaseOrders.add(new PurchaseOrder(orderID, itemReferenceNum, status, approvedBy, userID, message, qty));
+                purchaseOrders.add(new PurchaseOrder(orderID, itemReferenceNum, "", status, approvedBy, userID, "", message, qty));
 
             }
 
@@ -106,6 +112,46 @@ public class PurchaseOrderDAO {
         }
         return purchaseOrders;
     } //end of executeQuery()
+
+    private List<PurchaseOrder> executeQueryForAdmins(String sql_query, Object ... params){ //use this for admin to see purchaseOrders with username, itemname (sql_query must JOIN items, accounts, purchase_orders, request)
+        List<PurchaseOrder> purchaseOrders = new ArrayList<>(); 
+
+        try{
+            Connection con = DBConnection.getConnection(); 
+            PreparedStatement stmt = con.prepareStatement(sql_query); //SQL Execution //sends SQL *****
+
+            for(int i = 0; i < params.length; i++){
+                stmt.setObject(i+1, params[i]);
+            }
+
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()){
+                int orderID = rs.getInt("Order_ID");
+                int itemReferenceNum = rs.getInt("Item_Reference_Number");
+                OrderStatus status = OrderStatus.valueOf(rs.getString("Status"));
+                int approvedBy = rs.getInt("Approved_By");
+                int userID = rs.getInt("User_ID");
+                String message = rs.getString("Message");
+                int qty = rs.getInt("Qty");
+
+                String itemName = rs.getString("Item_Name");
+                String username = rs.getString("Username");
+
+                purchaseOrders.add(new PurchaseOrder(orderID, itemReferenceNum, itemName, status, approvedBy, userID, username, message, qty));
+
+            }
+
+            rs.close(); //clean up ***** below
+            stmt.close(); 
+            con.close(); 
+
+        } catch (Exception e){
+            e.printStackTrace(); 
+        }
+        return purchaseOrders;
+
+    }
 
     private boolean executeUpdate(String sql_query, Object ... params){ //use for updating attributes
         boolean successfulUpdate= false;
