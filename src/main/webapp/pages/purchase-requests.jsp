@@ -1,171 +1,192 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page import="java.util.List" %>
+<%@ page import="com.medicalims.model.Admin" %>
+<%@ page import="com.medicalims.model.PurchaseOrder" %>
+
+<%
+    Admin admin = (Admin) session.getAttribute("admin");
+    if (admin == null) {
+        response.sendRedirect(request.getContextPath() + "/logout");
+        return;
+    }
+
+    String error = (String) request.getAttribute("error");
+    String selectedStatus = (String) request.getAttribute("selectedStatus");
+    List<PurchaseOrder> purchaseOrders =
+            (List<PurchaseOrder>) request.getAttribute("purchaseOrders");
+
+    if (selectedStatus == null) {
+        selectedStatus = "";
+    }
+%>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>MedIMS Purchase Requests</title>
-  <link rel="stylesheet" href="../css/style.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>MedIMS Purchase Requests</title>
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css" />
+
+    <style>
+        .expanded-row {
+            display: none;
+        }
+
+        .expanded-box {
+            padding: 18px 20px;
+            background-color: #f8fafc;
+            border-radius: 12px;
+        }
+
+        .expanded-actions {
+            margin-top: 16px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .clickable-row {
+            cursor: pointer;
+        }
+
+        .clickable-row:hover {
+            background-color: #f8fafc;
+        }
+    </style>
 </head>
 <body>
 
 <div class="layout">
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <h2>MedIMS Admin</h2>
-    <a href="admin-dashboard.jsp">Dashboard</a>
-    <a href="admin-inventory.jsp">Inventory</a>
-    <a href="purchase-requests.jsp">Purchase Requests</a>
-    <a href="orders.jsp">Orders</a>
-    <a href="supplier-info.jsp">Supplier Info</a>
-    <a href="../login.jsp">Logout</a>
-  </aside>
+    <aside class="sidebar">
+        <h2>MedIMS Admin</h2>
+        <a href="<%= request.getContextPath() %>/admin-dashboard">Dashboard</a>
+        <a href="<%= request.getContextPath() %>/inventory">Inventory</a>
+        <a href="<%= request.getContextPath() %>/admin-purchaseOrder">Purchase Requests</a>
+        <a href="<%= request.getContextPath() %>/pages/orders.jsp">Orders</a>
+        <a href="<%= request.getContextPath() %>/pages/supplier-info.jsp">Supplier Info</a>
+        <a href="<%= request.getContextPath() %>/logout">Logout</a>
+    </aside>
 
-  <!-- Main Content -->
-  <main class="main">
-    <div class="topbar">
-      <h2>Purchase Requests</h2>
-    </div>
+    <main class="main">
+        <div class="topbar">
+            <div>
+                <h2>All Purchase Orders</h2>
+                <p>View all requests submitted by users.</p>
+            </div>
+            <a href="<%= request.getContextPath() %>/admin-dashboard" class="secondary-btn">
+                Back to Dashboard
+            </a>
+        </div>
 
-    <div class="card" style="margin-top: 20px;">
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Request ID</th>
-              <th>User</th>
-              <th>Item</th>
-              <th>Message</th>
-              <th>Action</th>
-            </tr>
-          </thead>
+        <% if (error != null) { %>
+            <div class="card" style="margin-top: 16px; color: #b00020;">
+                <%= error %>
+            </div>
+        <% } %>
 
-          <tbody>
-
-            <%-- Future dynamic data will come from Servlet here --%>
-
-            <tr class="clickable-row" onclick="toggleExpand('req1')">
-              <td>#REQ-101</td>
-              <td>John Doe (ER)</td>
-              <td>Surgical Gloves</td>
-              <td>Low stock in ER</td>
-              <td><button class="secondary-btn">View</button></td>
-            </tr>
-
-            <tr id="req1" style="display:none;">
-              <td colspan="5">
-                <div class="expanded-box">
-                  <p><strong>Request ID:</strong> REQ-101</p>
-                  <p><strong>User:</strong> John Doe</p>
-                  <p><strong>Department:</strong> ER</p>
-                  <p><strong>Item:</strong> Surgical Gloves</p>
-                  <p><strong>Message:</strong> We are running low on gloves.</p>
-
-                  <div class="expanded-actions">
-                    <button class="primary-btn" onclick="makePurchase(event)">
-                      Make Purchase
-                    </button>
-                    <button class="gray-btn" onclick="closeRow(event, 'req1')">
-                      Close
-                    </button>
-                  </div>
+        <div class="form-card" style="margin-top: 16px;">
+            <form method="get" action="<%= request.getContextPath() %>/admin-purchaseOrder">
+                <div class="form-group">
+                    <label for="status">Filter by Status</label>
+                    <select id="status" name="status">
+                        <option value="" <%= selectedStatus.isEmpty() ? "selected" : "" %>>All</option>
+                        <option value="PENDING" <%= "PENDING".equals(selectedStatus) ? "selected" : "" %>>Pending</option>
+                        <option value="APPROVED" <%= "APPROVED".equals(selectedStatus) ? "selected" : "" %>>Approved</option>
+                        <option value="DENIED" <%= "DENIED".equals(selectedStatus) ? "selected" : "" %>>Denied</option>
+                    </select>
                 </div>
-              </td>
-            </tr>
 
-            <tr class="clickable-row" onclick="toggleExpand('req2')">
-              <td>#REQ-102</td>
-              <td>Alice Smith (ICU)</td>
-              <td>IV Fluids</td>
-              <td>Need more stock</td>
-              <td><button class="secondary-btn">View</button></td>
-            </tr>
-
-            <tr id="req2" style="display:none;">
-              <td colspan="5">
-                <div class="expanded-box">
-                  <p><strong>Request ID:</strong> REQ-102</p>
-                  <p><strong>User:</strong> Alice Smith</p>
-                  <p><strong>Department:</strong> ICU</p>
-                  <p><strong>Item:</strong> IV Fluids</p>
-                  <p><strong>Message:</strong> Stock is getting low.</p>
-
-                  <div class="expanded-actions">
-                    <button class="primary-btn" onclick="makePurchase(event)">
-                      Make Purchase
-                    </button>
-                    <button class="gray-btn" onclick="closeRow(event, 'req2')">
-                      Close
-                    </button>
-                  </div>
+                <div class="form-actions">
+                    <button type="submit" class="primary-btn">Apply Filter</button>
+                    <a href="<%= request.getContextPath() %>/admin-purchaseOrder" class="secondary-btn">
+                        Clear Filter
+                    </a>
                 </div>
-              </td>
-            </tr>
+            </form>
+        </div>
 
-            <tr class="clickable-row" onclick="toggleExpand('req3')">
-              <td>#REQ-103</td>
-              <td>David Lee (Pharmacy)</td>
-              <td>Insulin Vials</td>
-              <td>Expiring soon</td>
-              <td><button class="secondary-btn">View</button></td>
-            </tr>
+        <div class="card" style="margin-top: 20px;">
+            <h3>Submitted Requests</h3>
 
-            <tr id="req3" style="display:none;">
-              <td colspan="5">
-                <div class="expanded-box">
-                  <p><strong>Request ID:</strong> REQ-103</p>
-                  <p><strong>User:</strong> David Lee</p>
-                  <p><strong>Department:</strong> Pharmacy</p>
-                  <p><strong>Item:</strong> Insulin Vials</p>
-                  <p><strong>Message:</strong> Need new stock soon.</p>
+            <% if (purchaseOrders == null || purchaseOrders.isEmpty()) { %>
+                <p style="margin-top: 12px;">No purchase orders found.</p>
+            <% } else { %>
+                <div class="table-wrap" style="margin-top: 12px;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Item Reference #</th>
+                                <th>Quantity</th>
+                                <th>Message</th>
+                                <th>Status</th>
+                                <th>Approved By</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% for (PurchaseOrder order : purchaseOrders) { %>
+                                <tr class="clickable-row" onclick="toggleExpand('order-<%= order.getOrderID() %>')">
+                                    <td><%= order.getOrderID() %></td>
+                                    <td><%= order.getItemReferenceNum() %></td>
+                                    <td><%= order.getQty() %></td>
+                                    <td><%= order.getMessage() %></td>
+                                    <td><%= order.getStatus() %></td>
+                                    <td>
+                                        <%= order.getApprovedBy() == 0 ? "Not yet approved" : order.getApprovedBy() %>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="secondary-btn" onclick="toggleExpandButton(event, 'order-<%= order.getOrderID() %>')">
+                                            View
+                                        </button>
+                                    </td>
+                                </tr>
 
-                  <div class="expanded-actions">
-                    <button class="primary-btn" onclick="makePurchase(event)">
-                      Make Purchase
-                    </button>
-                    <button class="gray-btn" onclick="closeRow(event, 'req3')">
-                      Close
-                    </button>
-                  </div>
+                                <tr id="order-<%= order.getOrderID() %>" class="expanded-row">
+                                    <td colspan="7">
+                                        <div class="expanded-box">
+                                            <p><strong>Order ID:</strong> <%= order.getOrderID() %></p>
+                                            <p><strong>Item Reference #:</strong> <%= order.getItemReferenceNum() %></p>
+                                            <p><strong>Quantity:</strong> <%= order.getQty() %></p>
+                                            <p><strong>Message:</strong> <%= order.getMessage() %></p>
+                                            <p><strong>Status:</strong> <%= order.getStatus() %></p>
+                                            <p><strong>Approved By:</strong> <%= order.getApprovedBy() == 0 ? "Not yet approved" : order.getApprovedBy() %></p>
+
+                                            <div class="expanded-actions">
+                                                <button type="button" class="gray-btn" onclick="closeRow(event, 'order-<%= order.getOrderID() %>')">
+                                                    Close
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
                 </div>
-              </td>
-            </tr>
-
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <%-- Optional backend message --%>
-    <%
-      String msg = (String) request.getAttribute("message");
-      if (msg != null) {
-    %>
-      <p style="color: green; margin-top: 15px;"><%= msg %></p>
-    <%
-      }
-    %>
-
-  </main>
+            <% } %>
+        </div>
+    </main>
 </div>
 
 <script>
-  function toggleExpand(id) {
-    const row = document.getElementById(id);
-    row.style.display = row.style.display === "table-row" ? "none" : "table-row";
-  }
+    function toggleExpand(id) {
+        const row = document.getElementById(id);
+        row.style.display = row.style.display === "table-row" ? "none" : "table-row";
+    }
 
-  function closeRow(event, id) {
-    event.stopPropagation();
-    document.getElementById(id).style.display = "none";
-  }
+    function toggleExpandButton(event, id) {
+        event.stopPropagation();
+        toggleExpand(id);
+    }
 
-  function makePurchase(event) {
-    event.stopPropagation();
-    alert("Purchase request approved!");
-    window.location.href = "orders.jsp";
-  }
+    function closeRow(event, id) {
+        event.stopPropagation();
+        document.getElementById(id).style.display = "none";
+    }
 </script>
 
+<script src="<%= request.getContextPath() %>/js/script.js"></script>
 </body>
 </html>

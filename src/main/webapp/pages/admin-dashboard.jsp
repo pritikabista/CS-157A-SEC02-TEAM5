@@ -23,7 +23,7 @@
       <nav>
         <a href="<%= request.getContextPath() %>/admin-dashboard">Dashboard</a>
         <a href="<%= request.getContextPath() %>/inventory">Inventory</a>
-        <a href="<%= request.getContextPath() %>/pages/purchase-requests.jsp">Purchase Requests</a>
+        <a href="<%= request.getContextPath() %>/admin-purchaseOrder">Purchase Requests</a>
         <a href="<%= request.getContextPath() %>/pages/orders.jsp">Orders</a>
         <a href="<%= request.getContextPath() %>/pages/supplier-info.jsp">Supplier Info</a>
         <a href="<%= request.getContextPath() %>/pages/add-item.jsp">Add Item</a>
@@ -47,7 +47,7 @@
           <p class="note">View and update hospital inventory</p>
         </a>
 
-        <a href="<%= request.getContextPath() %>/pages/purchase-requests.jsp" class="dashboard-tile">
+        <a href="<%= request.getContextPath() %>/admin-purchaseOrder" class="dashboard-tile">
           <h3>Purchase Requests</h3>
           <p class="note">Review user requests</p>
         </a>
