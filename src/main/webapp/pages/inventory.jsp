@@ -32,114 +32,84 @@
 %>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>View Inventory</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MedIMS Inventory</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css" />
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 30px;
-            background-color: #f8f9fa;
+        .inventory-page {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px;
         }
 
-        .top-bar {
+        .topbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
         }
 
-        h1 {
-            margin: 0;
+        .topbar-links {
+            display: flex;
+            gap: 15px;
         }
 
-        .back-link {
+        .topbar-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
             text-decoration: none;
-            color: #007bff;
-            font-weight: bold;
+            transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
         }
 
-        .search-box {
-            margin-bottom: 20px;
+        .topbar-links .primary-btn {
+            background-color: #0f766e;
+            color: #ffffff;
+            border: 1px solid #0f766e;
         }
 
-        .search-box input[type="text"] {
-            width: 320px;
-            padding: 8px;
-            font-size: 14px;
+        .topbar-links .primary-btn:hover {
+            background-color: #0b5e57;
+            border-color: #0b5e57;
+            transform: translateY(-1px);
         }
 
-        .search-box button {
-            padding: 8px 12px;
-            font-size: 14px;
-            cursor: pointer;
+        .topbar-links .secondary-btn {
+            background-color: #ffffff;
+            color: #0f766e;
+            border: 1px solid #cbd5e1;
         }
 
-        .search-box a {
-            margin-left: 10px;
-            text-decoration: none;
-            color: #007bff;
+        .topbar-links .secondary-btn:hover {
+            background-color: #f8fafc;
+            border-color: #94a3b8;
+            transform: translateY(-1px);
         }
 
-        .filter-box {
-            margin-bottom: 20px;
-        }
-
-        .filter-box select {
-            padding: 8px;
-            font-size: 14px;
-            margin-right: 10px;
-        }
-
-        .filter-box input[type="text"] {
-            padding: 8px;
-            font-size: 14px;
-            margin-right: 10px;
-        }
-
-        .filter-box button {
-            padding: 8px 12px;
-            font-size: 14px;
-            cursor: pointer;
-        }
-
-        .filter-box a {
-            margin-left: 10px;
-            text-decoration: none;
-            color: #007bff;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background-color: white;
-        }
-
-        th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #343a40;
-            color: white;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-
-        .error {
-            color: red;
-            font-weight: bold;
+        .search-form,
+        .filter-form {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
             margin-bottom: 15px;
         }
 
-        .no-data {
-            text-align: center;
-            padding: 20px;
+        .search-form input[type="text"],
+        .filter-form select,
+        .filter-form input[type="text"] {
+            padding: 8px;
+            font-size: 14px;
+        }
+
+        .search-form input[type="text"] {
+            min-width: 320px;
         }
 
         .expandable-row {
@@ -162,6 +132,17 @@
         .expandable-content button {
             padding: 6px 10px;
             cursor: pointer;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .error {
+            color: red;
+            font-weight: bold;
+            margin-bottom: 15px;
         }
     </style>
 
@@ -188,11 +169,11 @@
                     '</select>';
 
                 document.getElementById("filterValue").value = savedFilterValue;
-            } 
+            }
             else if (filterType === "lot") {
                 container.innerHTML =
                     '<input type="text" name="filterValue" placeholder="Enter Lot Number" value="' + savedFilterValue + '">';
-            } 
+            }
             else {
                 container.innerHTML = '';
             }
@@ -213,95 +194,106 @@
     </script>
 </head>
 <body>
+    <main class="main" style="margin-left: 0;">
+        <div class="inventory-page">
+            <div class="topbar">
+                <div class="topbar-links">
+                    <a href="<%= request.getContextPath() %>/user-dashboard" class="primary-btn">Dashboard</a>
+                    <a href="${pageContext.request.contextPath}/logout" class="secondary-btn">Logout</a>
+                </div>
+            </div>
 
-    <div class="top-bar">
-        <h1>Inventory</h1>
-        <a class="back-link" href="<%= request.getContextPath() %>/user-dashboard">Back to Dashboard</a>
-    </div>
+            <div>
+                <h1>Inventory</h1>
+                <p>View available medical inventory and withdraw items.</p>
+            </div>
 
-    <div class="search-box">
-        <form action="inventory" method="post">
-            <input type="text" name="search"
-                   placeholder="Search by item name, item ref #, or category name"
-                   value="<%= search %>">
-            <button type="submit">Search</button>
-            <a href="inventory">Reset</a>
-        </form>
-    </div>
+            <div class="card" style="margin-top: 20px;">
+                <div class="toolbar">
+                    <form action="inventory" method="post" class="search-form">
+                        <input type="text" name="search"
+                               placeholder="Search by item name, item ref #, or category name"
+                               value="<%= search %>">
+                        <button type="submit">Search</button>
+                        <a href="inventory">Reset</a>
+                    </form>
 
-    <div class="filter-box">
-        <form action="inventory" method="post">
-            <select name="filterType" id="filterType" onchange="updateFilterOptions()">
-                <option value="">Select Filter</option>
-                <option value="location" <%= "location".equals(filterType) ? "selected" : "" %>>By Location</option>
-                <option value="lot" <%= "lot".equals(filterType) ? "selected" : "" %>>By Lot Number</option>
-                <option value="expiration" <%= "expiration".equals(filterType) ? "selected" : "" %>>Nearest Expiration Date</option>
-                <option value="lowStock" <%= "lowStock".equals(filterType) ? "selected" : "" %>>Low Stock</option>
-            </select>
+                    <form action="inventory" method="post" class="filter-form">
+                        <select name="filterType" id="filterType" onchange="updateFilterOptions()">
+                            <option value="">Select Filter</option>
+                            <option value="location" <%= "location".equals(filterType) ? "selected" : "" %>>By Location</option>
+                            <option value="lot" <%= "lot".equals(filterType) ? "selected" : "" %>>By Lot Number</option>
+                            <option value="expiration" <%= "expiration".equals(filterType) ? "selected" : "" %>>Nearest Expiration Date</option>
+                            <option value="lowStock" <%= "lowStock".equals(filterType) ? "selected" : "" %>>Low Stock</option>
+                        </select>
 
-            <span id="filterValueContainer"></span>
+                        <span id="filterValueContainer"></span>
 
-            <button type="submit">Apply Filter</button>
-            <a href="inventory">Reset</a>
-        </form>
-    </div>
+                        <button type="submit">Apply Filter</button>
+                        <a href="inventory">Reset</a>
+                    </form>
+                </div>
 
-    <% if (errorMessage != null) { %>
-        <div class="error"><%= errorMessage %></div>
-    <% } %>
-
-    <table>
-        <thead>
-            <tr>
-                <th>Item Ref #</th>
-                <th>Item Name</th>
-                <th>Category</th>
-                <th>Lot #</th>
-                <th>Expiration Date</th>
-                <th>Quantity</th>
-                <th>Location</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% if (inventoryItems != null && !inventoryItems.isEmpty()) { %>
-                <% int i = 0; %>
-                <% for (InventoryItem item : inventoryItems) { %>
-                    <tr data-row-index="<%= i %>" onclick="toggleRow( this.dataset.rowIndex )" style="cursor:pointer;">
-                        <td><%= item.getItemReferenceNumber() %></td>
-                        <td><%= item.getItemName() %></td>
-                        <td><%= item.getCategoryName() %></td>
-                        <td><%= item.getLotNumber() %></td>
-                        <td><%= item.getExpirationDate() != null ? item.getExpirationDate() : "" %></td>
-                        <td><%= item.getStock() %></td>
-                        <td><%= item.getLocation() %></td>
-                    </tr>
-
-                    <tr id="expand-<%= i %>" class="expandable-row">
-                        <td colspan="7">
-                            <div class="expandable-content">
-                                <form action="inventory" method="post">
-                                    <input type="hidden" name="action" value="withdraw">
-                                    <input type="hidden" name="itemReferenceNumber" value="<%= item.getItemReferenceNumber() %>">
-                                    <input type="hidden" name="locationID" value="<%= item.getLocationID() %>">
-
-                                    Withdraw Qty:
-                                    <input type="number" name="qty" min="1" required>
-
-                                    <button type="submit">Withdraw</button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <% i++; %>
+                <% if (errorMessage != null) { %>
+                    <div class="error"><%= errorMessage %></div>
                 <% } %>
-            <% } else { %>
-                <tr>
-                    <td colspan="7" class="no-data">No inventory items found.</td>
-                </tr>
-            <% } %>
-        </tbody>
-    </table>
 
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Item Ref #</th>
+                                <th>Item Name</th>
+                                <th>Category</th>
+                                <th>Lot #</th>
+                                <th>Expiration Date</th>
+                                <th>Quantity</th>
+                                <th>Location</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (inventoryItems != null && !inventoryItems.isEmpty()) { %>
+                                <% int i = 0; %>
+                                <% for (InventoryItem item : inventoryItems) { %>
+                                    <tr data-row-index="<%= i %>" onclick="toggleRow(this.dataset.rowIndex)" style="cursor:pointer;">
+                                        <td><%= item.getItemReferenceNumber() %></td>
+                                        <td><%= item.getItemName() %></td>
+                                        <td><%= item.getCategoryName() %></td>
+                                        <td><%= item.getLotNumber() %></td>
+                                        <td><%= item.getExpirationDate() != null ? item.getExpirationDate() : "" %></td>
+                                        <td><%= item.getStock() %></td>
+                                        <td><%= item.getLocation() %></td>
+                                    </tr>
+
+                                    <tr id="expand-<%= i %>" class="expandable-row">
+                                        <td colspan="7">
+                                            <div class="expandable-content">
+                                                <form action="inventory" method="post">
+                                                    <input type="hidden" name="action" value="withdraw">
+                                                    <input type="hidden" name="itemReferenceNumber" value="<%= item.getItemReferenceNumber() %>">
+                                                    <input type="hidden" name="locationID" value="<%= item.getLocationID() %>">
+
+                                                    Withdraw Qty:
+                                                    <input type="number" name="qty" min="1" required>
+
+                                                    <button type="submit">Withdraw</button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <% i++; %>
+                                <% } %>
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="7" class="no-data">No inventory items found.</td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
 </body>
 </html>
