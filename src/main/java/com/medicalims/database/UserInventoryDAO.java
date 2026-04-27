@@ -80,10 +80,8 @@ public class UserInventoryDAO {
     }
 
     //User will be able to withdraw items //a method that first check whether the item 
-    public boolean withdrawItem(int itemReferenceNum, int qty, int locationID){ //had to use locationID because items can exist in multiple locations
-        String sql_query = "UPDATE Inventory SET Stock = Stock - ? " +
-                            "WHERE Location_ID = ? AND Item_Reference_Number = ? AND Stock >= ?";
-        return executeUpdate(sql_query, qty, locationID, itemReferenceNum, qty);
+    public boolean withdrawItem(int itemReferenceNum, int qty, int locationID, int accountID){ //had to use locationID because items can exist in multiple locations
+       return transactionHandlingForWithdrawal(itemReferenceNum, qty, locationID, accountID);
     }
 
     //Users can use the searchbar that accepts string (CAN BE EITHER item name or item ref num or category name)
@@ -174,4 +172,81 @@ public class UserInventoryDAO {
         }
         return successfulUpdate;
     }
+
+    private boolean transactionHandlingForWithdrawal(int itemReferenceNum, int qty, int locationID, int accountID){
+
+        Connection con = null; 
+        PreparedStatement updateStmt = null; 
+        PreparedStatement insertStmt = null; 
+
+        String updateSQL = "UPDATE Inventory SET Stock = Stock - ? " +
+                            "WHERE Location_ID = ? AND Item_Reference_Number = ? AND Stock >= ?";
+
+        String insertSQL = "INSERT INTO Withdraw_Items (Account_ID, Item_Reference_Number, Location_ID, Quantity) " +
+                                "VALUES (?, ?, ?, ?)";
+
+        try{
+            con = DBConnection.getConnection();
+            con.setAutoCommit(false);
+
+            updateStmt = con.prepareStatement(updateSQL);
+            updateStmt.setInt(1, qty);
+            updateStmt.setInt(2, locationID);
+            updateStmt.setInt(3, itemReferenceNum);
+            updateStmt.setInt(4, qty);
+
+            int updatedRows = updateStmt.executeUpdate();
+
+            if(updatedRows <= 0){
+                con.rollback(); 
+                return false; 
+            }
+
+            insertStmt = con.prepareStatement(insertSQL);
+            insertStmt.setInt(1, accountID);
+            insertStmt.setInt(2, itemReferenceNum);
+            insertStmt.setInt(3, locationID);
+            insertStmt.setInt(4, qty);
+
+            int insertedRows = insertStmt.executeUpdate();
+
+            if (insertedRows <= 0){
+                con.rollback();
+                return false;
+            }
+
+            con.commit();
+            return true;
+
+        }catch (Exception e){
+            try{
+                if(con != null){
+                    con.rollback();
+                }
+            } catch (Exception ex){
+                ex.printStackTrace();
+            }
+
+            e.printStackTrace();
+            return false;
+        
+        }finally {
+            try{
+                if(updateStmt != null){
+                updateStmt.close();
+                }
+                if(insertStmt != null){
+                    insertStmt.close();
+                }
+                if(con != null){
+                    con.setAutoCommit(true);
+                    con.close();
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
 }
+
+
