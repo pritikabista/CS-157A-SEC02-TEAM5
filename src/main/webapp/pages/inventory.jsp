@@ -8,6 +8,8 @@
     User user = (User) session.getAttribute("user");
     Admin admin = (Admin) session.getAttribute("admin");
 
+    boolean isAdmin = (admin != null);
+
     if (user == null && admin == null) {
         response.sendRedirect(request.getContextPath() + "/pages/login.jsp");
         return;
@@ -131,8 +133,47 @@
 
         </table>
 
-    </div>
-</div>
-</main>
+                                    <tr id="expand-<%= i %>" class="expandable-row">
+                                        <td colspan="7">
+                                            <div class="expandable-content">
+                                                <form action="inventory" method="post">
+                                                    <input type="hidden" name="action" value="withdraw">
+                                                    <input type="hidden" name="itemReferenceNumber" value="<%= item.getItemReferenceNumber() %>">
+                                                    <input type="hidden" name="locationID" value="<%= item.getLocationID() %>">
+
+                                                    Withdraw Qty:
+                                                    <input type="number" name="qty" min="1" required>
+
+                                                    <button type="submit">Withdraw</button>
+                                                </form>
+                                                <% if (admin != null) { %>
+                                                    <form action="inventory" method="post" style="margin-top:10px;">
+                                                        <input type="hidden" name="action" value="update">
+                                                        <input type="hidden" name="itemReferenceNumber" value="<%= item.getItemReferenceNumber() %>">
+                                                        <input type="hidden" name="locationID" value="<%= item.getLocationID() %>">
+                                                
+                                                        Add Qty:
+                                                        <input type="number" name="qty" min="1" required>
+                                                
+                                                        <button type="submit">Add Stock</button>
+                                                    </form>
+                                                <% } %>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <% i++; %>
+                                <% } %>
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="7" class="no-data">No inventory items found.</td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
 </body>
 </html>

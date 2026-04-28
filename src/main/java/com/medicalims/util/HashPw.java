@@ -16,4 +16,10 @@ public class HashPw {
         return match;
     }
 
+    //For testing
+    public static void main(String[] args) {
+        System.out.println(hashedPwd("admin123"));
+        System.out.println(hashedPwd("user123"));
+    }
+
 }

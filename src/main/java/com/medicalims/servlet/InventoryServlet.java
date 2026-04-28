@@ -80,12 +80,12 @@ public class InventoryServlet extends HttpServlet {
         UserInventoryDAO userInventoryDAO = new UserInventoryDAO(); 
         List<InventoryItem> inventoryItems;
 
-        boolean withdrawEmpty = (withdraw == null || withdraw.trim().isEmpty());
+        //boolean withdrawEmpty = (withdraw == null || withdraw.trim().isEmpty());
         boolean searchEmpty = (userInput == null || userInput.trim().isEmpty());
         boolean filterTypeEmpty = (filterType == null || filterType.trim().isEmpty());
         boolean filterValueEmpty = (filterValue == null || filterValue.trim().isEmpty());
 
-        if(!withdrawEmpty){ //user click withdraw button 
+        if("withdraw".equals("action")){ //user click withdraw button 
             String itemReferenceNumberString = request.getParameter("itemReferenceNumber");
             String locationIDString = request.getParameter("locationID");
             String qtyStr = request.getParameter("qty");
@@ -110,6 +110,38 @@ public class InventoryServlet extends HttpServlet {
             }
 
               inventoryItems = userInventoryDAO.getAllInventoryItemsToDisplay(); 
+        }
+        else if ("update".equals(withdraw)) {
+
+            if (admin == null) {
+                response.sendError(HttpServletResponse.SC_FORBIDDEN);
+                return;
+            }
+        
+            String itemReferenceNumberString = request.getParameter("itemReferenceNumber");
+            String locationIDString = request.getParameter("locationID");
+            String qtyStr = request.getParameter("qty");
+        
+            try {
+                int itemReferenceNumber = Integer.parseInt(itemReferenceNumberString);
+                int locationID = Integer.parseInt(locationIDString);
+                int qty = Integer.parseInt(qtyStr);
+        
+                if (qty <= 0) {
+                    request.setAttribute("errorMessage", "Update quantity must be greater than 0");
+                } else {
+                    boolean success = userInventoryDAO.updateItemStock(itemReferenceNumber, qty, locationID);
+        
+                    if (!success) {
+                        request.setAttribute("errorMessage", "Could not update stock.");
+                    }
+                }
+        
+            } catch (NumberFormatException e) {
+                request.setAttribute("errorMessage", "Quantity must be an integer!");
+            }
+        
+            inventoryItems = userInventoryDAO.getAllInventoryItemsToDisplay();
         }
         else if(!searchEmpty){ //user used the search bar
             userInput = userInput.trim();
