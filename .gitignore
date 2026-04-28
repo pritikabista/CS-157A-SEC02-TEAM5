@@ -32,3 +32,6 @@ target/
 
 #VSCode 
 .vscode/
+
+# MySQL Login Credentials
+src/main/resources/db.properties

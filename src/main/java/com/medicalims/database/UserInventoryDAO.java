@@ -85,15 +85,17 @@ public class UserInventoryDAO {
     }
 
     public boolean updateItemStock(int itemReferenceNumber, int qty, int locationID) {
-        String sql = "UPDATE Inventory SET Stock = Stock + ? WHERE Item_Reference_Number = ? AND Location_ID = ?";
+        String sql = "UPDATE Inventory " + 
+                    "SET Stock = Stock + ? " + 
+                    "WHERE Location_ID = ? AND Item_Reference_Number = ?";
     
         try (
             Connection con = DBConnection.getConnection();
             PreparedStatement stmt = con.prepareStatement(sql)
         ) {
             stmt.setInt(1, qty);
-            stmt.setInt(2, itemReferenceNumber);
-            stmt.setInt(3, locationID);
+            stmt.setInt(2, locationID);
+            stmt.setInt(3, itemReferenceNumber);
     
             return stmt.executeUpdate() > 0;
     
