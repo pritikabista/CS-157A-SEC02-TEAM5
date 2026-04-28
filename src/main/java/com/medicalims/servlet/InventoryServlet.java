@@ -69,7 +69,7 @@ public class InventoryServlet extends HttpServlet {
             accountID = user.getAccountID();
         }
 
-        String withdraw = request.getParameter("action");
+        String action = request.getParameter("action");
 
         String userInput = request.getParameter("search");
 
@@ -85,7 +85,7 @@ public class InventoryServlet extends HttpServlet {
         boolean filterTypeEmpty = (filterType == null || filterType.trim().isEmpty());
         boolean filterValueEmpty = (filterValue == null || filterValue.trim().isEmpty());
 
-        if("withdraw".equals("action")){ //user click withdraw button 
+        if("withdraw".equals(action)){ //user click withdraw button 
             String itemReferenceNumberString = request.getParameter("itemReferenceNumber");
             String locationIDString = request.getParameter("locationID");
             String qtyStr = request.getParameter("qty");
@@ -111,7 +111,7 @@ public class InventoryServlet extends HttpServlet {
 
               inventoryItems = userInventoryDAO.getAllInventoryItemsToDisplay(); 
         }
-        else if ("update".equals(withdraw)) {
+        else if ("update".equals(action)) {
 
             if (admin == null) {
                 response.sendError(HttpServletResponse.SC_FORBIDDEN);
