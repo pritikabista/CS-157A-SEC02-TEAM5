@@ -16,7 +16,7 @@
         <a href="<%= request.getContextPath() %>/user-dashboard" class="active-link">Dashboard</a>
         <a href="<%= request.getContextPath() %>/inventory">Inventory</a>
         <a href="<%= request.getContextPath() %>/user-purchaseOrder">Request Item</a>
-        <a href="<%= request.getContextPath() %>/pages/login.jsp">Logout</a>
+        <a href="<%= request.getContextPath() %>/logout">Logout</a>
       </nav>
     </header>
 

@@ -7,13 +7,24 @@
   <title>MedIMS Login</title>
   <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css" />
 </head>
+
 <body>
   <div class="auth-wrapper">
     <div class="auth-card">
-      <h1>MedIMS</h1>
-      <p>Medical Inventory Management System</p>
+
+      <!-- Logo + Title -->
+      <div class="login-header">
+        <div class="brand-row">
+          <h1>MedIMS</h1>
+          <img src="${pageContext.request.contextPath}/images/logo.png" alt="MedIMS Logo" class="logo">
+          
+        </div>
+
+        <p class="tagline">Medical Inventory Management System</p>
+      </div>
 
       <form action="${pageContext.request.contextPath}/login" method="post">
+        
         <div class="form-group">
           <label for="username">Username</label>
           <input
@@ -36,13 +47,12 @@
           />
         </div>
 
-        
         <div class="form-actions">
           <button type="submit">Login</button>
           <button
             type="button"
             class="secondary"
-            onclick="window.location.href='${pageContext.request.contextPath}/pages/create-account.jsp'"
+            onclick="window.location.href='${pageContext.request.contextPath}/create-account'"
           >
             Create Account
           </button>
@@ -63,6 +73,7 @@
       <%
         }
       %>
+
     </div>
   </div>
 

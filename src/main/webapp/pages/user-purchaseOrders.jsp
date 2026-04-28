@@ -1,17 +1,12 @@
-<%---jsp when user click the "view my requests" --%>
-<%-- see DisplayUserPurchaseOrdersServlet --%>
-
-<%-- Temp, chatgpted frontend --%>
-
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="java.util.List" %>
 <%@ page import="com.medicalims.model.PurchaseOrder" %>
-<%@ page import="com.medicalims.model.OrderStatus" %>
 
 <%
     String error = (String) request.getAttribute("error");
     String selectedStatus = (String) request.getAttribute("selectedStatus");
-    List<PurchaseOrder> purchaseOrders = (List<PurchaseOrder>) request.getAttribute("purchaseOrders");
+    List<PurchaseOrder> purchaseOrders =
+            (List<PurchaseOrder>) request.getAttribute("purchaseOrders");
 
     if (selectedStatus == null) {
         selectedStatus = "";
@@ -26,6 +21,7 @@
     <title>My Purchase Orders</title>
     <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css">
 </head>
+
 <body>
 <div class="page main">
 
@@ -34,9 +30,16 @@
             <h2>My Purchase Orders</h2>
             <p>View all requests you have submitted.</p>
         </div>
-        <a href="<%= request.getContextPath() %>/user-dashboard" class="secondary-btn">
-            Back to Dashboard
-        </a>
+
+        <div style="display: flex; gap: 10px;">
+            <a href="<%= request.getContextPath() %>/user-dashboard" class="secondary-btn">
+                Back to Dashboard
+            </a>
+
+            <a href="<%= request.getContextPath() %>/logout" class="secondary-btn">
+                Logout
+            </a>
+        </div>
     </div>
 
     <% if (error != null) { %>
@@ -49,6 +52,7 @@
         <form method="get" action="<%= request.getContextPath() %>/user-myRequests">
             <div class="form-group">
                 <label for="status">Filter by Status</label>
+
                 <select id="status" name="status">
                     <option value="" <%= selectedStatus.isEmpty() ? "selected" : "" %>>All</option>
                     <option value="PENDING" <%= "PENDING".equals(selectedStatus) ? "selected" : "" %>>Pending</option>
@@ -59,6 +63,7 @@
 
             <div class="form-actions">
                 <button type="submit" class="primary-btn">Apply Filter</button>
+
                 <a href="<%= request.getContextPath() %>/user-myRequests" class="secondary-btn">
                     Clear Filter
                 </a>
@@ -75,28 +80,29 @@
             <div class="table-wrap" style="margin-top: 12px;">
                 <table>
                     <thead>
-                    <tr>
-                        <th>Order ID</th>
-                        <th>Item Reference #</th>
-                        <th>Quantity</th>
-                        <th>Message</th>
-                        <th>Status</th>
-                        <th>Approved By</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <% for (PurchaseOrder order : purchaseOrders) { %>
                         <tr>
-                            <td><%= order.getOrderID() %></td>
-                            <td><%= order.getItemReferenceNum() %></td>
-                            <td><%= order.getQty() %></td>
-                            <td><%= order.getMessage() %></td>
-                            <td><%= order.getStatus() %></td>
-                            <td>
-                                <%= order.getApprovedBy() == 0 ? "Not yet approved" : order.getApprovedBy() %>
-                            </td>
+                            <th>Order ID</th>
+                            <th>Item Reference #</th>
+                            <th>Quantity</th>
+                            <th>Message</th>
+                            <th>Status</th>
+                            <th>Approved By</th>
                         </tr>
-                    <% } %>
+                    </thead>
+
+                    <tbody>
+                        <% for (PurchaseOrder order : purchaseOrders) { %>
+                            <tr>
+                                <td><%= order.getOrderID() %></td>
+                                <td><%= order.getItemReferenceNum() %></td>
+                                <td><%= order.getQty() %></td>
+                                <td><%= order.getMessage() %></td>
+                                <td><%= order.getStatus() %></td>
+                                <td>
+                                    <%= order.getApprovedBy() == 0 ? "Not yet approved" : order.getApprovedBy() %>
+                                </td>
+                            </tr>
+                        <% } %>
                     </tbody>
                 </table>
             </div>

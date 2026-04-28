@@ -832,3 +832,33 @@ tbody tr.data-row:hover,
     padding: 6px 10px;
     cursor: pointer;
 }
+
+.login-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+/* center everything properly */
+.brand-row {
+  display: inline-flex;   /* key change */
+  align-items: center;
+  justify-content: center;
+  gap: 4px;               /* smaller gap = closer logo */
+}
+
+/* text */
+.brand-row h1 {
+  margin: 0;
+}
+
+.brand-row .logo {
+  width: 60px;   /* increase from 42 → 60 */
+  height: 60px;
+  object-fit: contain;
+}
+
+/* tagline centered */
+.tagline {
+  text-align: center;
+  margin-top: 8px;
+}
