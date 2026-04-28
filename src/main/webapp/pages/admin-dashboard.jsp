@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="com.medicalims.model.Admin" %>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,22 +12,24 @@
 
 <body>
   <%
-  Admin admin = (Admin) session.getAttribute("admin");
-        if (admin == null) {
-          response.sendRedirect(request.getContextPath() + "/logout");
-          return;
-        }
+    Admin admin = (Admin) session.getAttribute("admin");
+    if (admin == null) {
+      response.sendRedirect(request.getContextPath() + "/logout");
+      return;
+    }
   %>
+
   <div class="layout">
     <aside class="sidebar">
       <h2>MedIMS Admin</h2>
+
       <nav>
         <a href="<%= request.getContextPath() %>/admin-dashboard">Dashboard</a>
         <a href="<%= request.getContextPath() %>/inventory">Inventory</a>
         <a href="<%= request.getContextPath() %>/admin-purchaseOrder">Purchase Requests</a>
-        <a href="<%= request.getContextPath() %>/pages/orders.jsp">Orders</a>
-        <a href="<%= request.getContextPath() %>/pages/supplier-info.jsp">Supplier Info</a>
-        <a href="<%= request.getContextPath() %>/pages/add-item.jsp">Add Item</a>
+        <a href="<%= request.getContextPath() %>/orders">Orders</a>
+        <a href="<%= request.getContextPath() %>/supplier-info">Supplier Info</a>
+        <a href="<%= request.getContextPath() %>/add-item">Add Item</a>
         <a href="<%= request.getContextPath() %>/logout">Logout</a>
       </nav>
     </aside>
@@ -52,13 +55,12 @@
           <p class="note">Review user requests</p>
         </a>
 
-        <a href="<%= request.getContextPath() %>/pages/orders.jsp" class="dashboard-tile">
+        <a href="<%= request.getContextPath() %>/orders" class="dashboard-tile">
           <h3>Orders</h3>
           <p class="note">Approve and update order status</p>
         </a>
       </div>
 
-      <%-- Optional dynamic message (future backend use) --%>
       <%
         String message = (String) request.getAttribute("message");
         if (message != null) {
@@ -67,10 +69,9 @@
       <%
         }
       %>
-
     </main>
   </div>
 
-  <script src="../js/script.js"></script>
+  <script src="<%= request.getContextPath() %>/js/script.js"></script>
 </body>
 </html>
