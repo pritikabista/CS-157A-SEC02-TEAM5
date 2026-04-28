@@ -8,8 +8,6 @@
     User user = (User) session.getAttribute("user");
     Admin admin = (Admin) session.getAttribute("admin");
 
-    boolean isAdmin = (admin != null);
-
     if (user == null && admin == null) {
         response.sendRedirect(request.getContextPath() + "/pages/login.jsp");
         return;
@@ -40,140 +38,116 @@
 
 <body>
 <main class="main" style="margin-left: 0;">
-<div class="inventory-page">
+    <div class="inventory-page">
 
-    <div class="topbar">
-        <h1>Inventory</h1>
+        <div class="topbar">
+            <h1>Inventory</h1>
 
-        <div>
-            <% if (admin != null) { %>
-                <a href="${pageContext.request.contextPath}/admin-dashboard">Dashboard</a>
-            <% } else { %>
-                <a href="${pageContext.request.contextPath}/user-dashboard">Dashboard</a>
-            <% } %>
-
-            <a href="${pageContext.request.contextPath}/logout">Logout</a>
-        </div>
-    </div>
-
-    <div class="card">
-
-        <!-- SEARCH -->
-        <form action="${pageContext.request.contextPath}/inventory" method="post">
-            <input type="text" name="search" value="<%= search %>" placeholder="Search...">
-            <button type="submit">Search</button>
-            <a href="${pageContext.request.contextPath}/inventory">Reset</a>
-        </form>
-
-        <!-- FILTER -->
-        <form action="${pageContext.request.contextPath}/inventory" method="post">
-            <select name="filterType">
-                <option value="">Select Filter</option>
-                <option value="location" <%= "location".equals(filterType) ? "selected" : "" %>>Location</option>
-                <option value="lot" <%= "lot".equals(filterType) ? "selected" : "" %>>Lot</option>
-                <option value="expiration" <%= "expiration".equals(filterType) ? "selected" : "" %>>Expiration</option>
-                <option value="lowStock" <%= "lowStock".equals(filterType) ? "selected" : "" %>>Low Stock</option>
-            </select>
-
-            <input type="text" name="filterValue" value="<%= filterValue %>" placeholder="Enter value">
-            <button type="submit">Apply</button>
-            <a href="${pageContext.request.contextPath}/inventory">Reset</a>
-        </form>
-
-        <!-- ERROR -->
-        <% if (errorMessage != null) { %>
-            <p style="color:red;"><%= errorMessage %></p>
-        <% } %>
-
-        <!-- TABLE -->
-        <table border="1">
-            <tr>
-                <th>Ref #</th>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Lot</th>
-                <th>Expiry</th>
-                <th>Qty</th>
-                <th>Location</th>
-            </tr>
-
-            <% if (inventoryItems != null && !inventoryItems.isEmpty()) { %>
-                <% for (InventoryItem item : inventoryItems) { %>
-                    <tr>
-                        <td><%= item.getItemReferenceNumber() %></td>
-                        <td><%= item.getItemName() %></td>
-                        <td><%= item.getCategoryName() %></td>
-                        <td><%= item.getLotNumber() %></td>
-                        <td><%= item.getExpirationDate() %></td>
-                        <td><%= item.getStock() %></td>
-                        <td><%= item.getLocation() %></td>
-                    </tr>
-
-                    <!-- WITHDRAW -->
-                    <tr>
-                        <td colspan="7">
-                            <form action="${pageContext.request.contextPath}/inventory" method="post">
-                                <input type="hidden" name="action" value="withdraw">
-                                <input type="hidden" name="itemReferenceNumber" value="<%= item.getItemReferenceNumber() %>">
-                                <input type="hidden" name="locationID" value="<%= item.getLocationID() %>">
-
-                                Qty:
-                                <input type="number" name="qty" min="1" required>
-
-                                <button type="submit">Withdraw</button>
-                            </form>
-                        </td>
-                    </tr>
+            <div>
+                <% if (admin != null) { %>
+                    <a href="${pageContext.request.contextPath}/admin-dashboard">Dashboard</a>
+                <% } else { %>
+                    <a href="${pageContext.request.contextPath}/user-dashboard">Dashboard</a>
                 <% } %>
-            <% } else { %>
-                <tr>
-                    <td colspan="7">No items found</td>
-                </tr>
+
+                <a href="${pageContext.request.contextPath}/logout">Logout</a>
+            </div>
+        </div>
+
+        <div class="card">
+
+            <form action="${pageContext.request.contextPath}/inventory" method="post" class="toolbar">
+                <input type="text" name="search" value="<%= search %>" placeholder="Search inventory...">
+                <button type="submit">Search</button>
+                <a href="${pageContext.request.contextPath}/inventory" class="gray-btn">Reset</a>
+            </form>
+
+            <form action="${pageContext.request.contextPath}/inventory" method="post" class="toolbar">
+                <select name="filterType">
+                    <option value="">Select Filter</option>
+                    <option value="location" <%= "location".equals(filterType) ? "selected" : "" %>>Location</option>
+                    <option value="lot" <%= "lot".equals(filterType) ? "selected" : "" %>>Lot</option>
+                    <option value="expiration" <%= "expiration".equals(filterType) ? "selected" : "" %>>Expiration</option>
+                    <option value="lowStock" <%= "lowStock".equals(filterType) ? "selected" : "" %>>Low Stock</option>
+                </select>
+
+                <input type="text" name="filterValue" value="<%= filterValue %>" placeholder="Enter filter value">
+                <button type="submit">Apply</button>
+                <a href="${pageContext.request.contextPath}/inventory" class="gray-btn">Reset</a>
+            </form>
+
+            <% if (errorMessage != null) { %>
+                <p style="color:red; margin-bottom: 16px;"><%= errorMessage %></p>
             <% } %>
 
-        </table>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ref #</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Lot</th>
+                            <th>Expiry</th>
+                            <th>Qty</th>
+                            <th>Location</th>
+                        </tr>
+                    </thead>
 
-                                    <tr id="expand-<%= i %>" class="expandable-row">
-                                        <td colspan="7">
-                                            <div class="expandable-content">
-                                                <form action="inventory" method="post">
-                                                    <input type="hidden" name="action" value="withdraw">
+                    <tbody>
+                        <% if (inventoryItems != null && !inventoryItems.isEmpty()) { %>
+                            <% for (InventoryItem item : inventoryItems) { %>
+                                <tr>
+                                    <td><%= item.getItemReferenceNumber() %></td>
+                                    <td><%= item.getItemName() %></td>
+                                    <td><%= item.getCategoryName() %></td>
+                                    <td><%= item.getLotNumber() %></td>
+                                    <td><%= item.getExpirationDate() %></td>
+                                    <td><%= item.getStock() %></td>
+                                    <td><%= item.getLocation() %></td>
+                                </tr>
+
+                                <tr class="expanded-row">
+                                    <td colspan="7">
+                                        <div class="expanded-box">
+                                            <form action="${pageContext.request.contextPath}/inventory" method="post">
+                                                <input type="hidden" name="action" value="withdraw">
+                                                <input type="hidden" name="itemReferenceNumber" value="<%= item.getItemReferenceNumber() %>">
+                                                <input type="hidden" name="locationID" value="<%= item.getLocationID() %>">
+
+                                                <label>Withdraw Qty:</label>
+                                                <input type="number" name="qty" min="1" required>
+
+                                                <button type="submit">Withdraw</button>
+                                            </form>
+
+                                            <% if (admin != null) { %>
+                                                <form action="${pageContext.request.contextPath}/inventory" method="post" style="margin-top:10px;">
+                                                    <input type="hidden" name="action" value="update">
                                                     <input type="hidden" name="itemReferenceNumber" value="<%= item.getItemReferenceNumber() %>">
                                                     <input type="hidden" name="locationID" value="<%= item.getLocationID() %>">
 
-                                                    Withdraw Qty:
+                                                    <label>Add Qty:</label>
                                                     <input type="number" name="qty" min="1" required>
 
-                                                    <button type="submit">Withdraw</button>
+                                                    <button type="submit">Add Stock</button>
                                                 </form>
-                                                <% if (admin != null) { %>
-                                                    <form action="inventory" method="post" style="margin-top:10px;">
-                                                        <input type="hidden" name="action" value="update">
-                                                        <input type="hidden" name="itemReferenceNumber" value="<%= item.getItemReferenceNumber() %>">
-                                                        <input type="hidden" name="locationID" value="<%= item.getLocationID() %>">
-                                                
-                                                        Add Qty:
-                                                        <input type="number" name="qty" min="1" required>
-                                                
-                                                        <button type="submit">Add Stock</button>
-                                                    </form>
-                                                <% } %>
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    <% i++; %>
-                                <% } %>
-                            <% } else { %>
-                                <tr>
-                                    <td colspan="7" class="no-data">No inventory items found.</td>
+                                            <% } %>
+                                        </div>
+                                    </td>
                                 </tr>
                             <% } %>
-                        </tbody>
-                    </table>
-                </div>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="7" class="no-data">No inventory items found.</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
             </div>
+
         </div>
-    </main>
+    </div>
+</main>
 </body>
 </html>

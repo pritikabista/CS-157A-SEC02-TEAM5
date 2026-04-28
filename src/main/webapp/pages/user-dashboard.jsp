@@ -8,10 +8,17 @@
   <title>MedIMS User Dashboard</title>
   <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css" />
 </head>
+
 <body>
   <div class="page">
     <header class="topbar user-topbar">
-      <div class="brand">MedIMS</div>
+      <div class="brand-row">
+        <img src="<%= request.getContextPath() %>/images/logo.png"
+             alt="MedIMS Logo"
+             style="width:40px; height:40px; object-fit:contain;">
+        <div class="brand">MedIMS</div>
+      </div>
+
       <nav class="user-nav">
         <a href="<%= request.getContextPath() %>/user-dashboard" class="active-link">Dashboard</a>
         <a href="<%= request.getContextPath() %>/inventory">Inventory</a>
@@ -29,7 +36,7 @@
       if (user == null) {
         response.sendRedirect(request.getContextPath() + "/pages/login.jsp");
         return;
-    }
+      }
     %>
 
     <% if (error != null) { %>
@@ -75,19 +82,19 @@
       <section class="dashboard-stats">
         <div class="stat-card">
           <span class="stat-title">Low Stock Items</span>
-         <span class="stat-number low-text"><%= request.getAttribute("lowStockCount") %></span>
+          <span class="stat-number low-text"><%= request.getAttribute("lowStockCount") %></span>
           <span class="stat-note">Needs attention</span>
         </div>
 
         <div class="stat-card">
           <span class="stat-title">Expiring Soon</span>
-         <span class="stat-number warn-text"><%= request.getAttribute("expiringSoonCount") %></span>
+          <span class="stat-number warn-text"><%= request.getAttribute("expiringSoonCount") %></span>
           <span class="stat-note">Use FEFO first</span>
         </div>
 
         <div class="stat-card">
           <span class="stat-title">My Requests</span>
-         <span class="stat-number"><%= request.getAttribute("myRequestsCount") %></span>
+          <span class="stat-number"><%= request.getAttribute("myRequestsCount") %></span>
           <span class="stat-note">Pending review</span>
         </div>
       </section>

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.medicalims.model.User;
-import com.medicalims.util.*;
+import com.medicalims.util.DBConnection;
 
 public class UserDAO {
 

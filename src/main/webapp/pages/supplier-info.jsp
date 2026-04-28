@@ -5,18 +5,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MedIMS Supplier Info</title>
-  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css" />
 </head>
 <body>
   <div class="layout">
     <aside class="sidebar">
       <h2>MedIMS Admin</h2>
-      <a href="admin-dashboard.jsp">Dashboard</a>
-      <a href="admin-inventory.jsp">Inventory</a>
-      <a href="purchase-requests.jsp">Purchase Requests</a>
-      <a href="orders.jsp">Orders</a>
-      <a href="supplier-info.jsp">Supplier Info</a>
-      <a href="../login.jsp">Logout</a>
+      <a href="<%= request.getContextPath() %>/admin-dashboard">Dashboard</a>
+      <a href="<%= request.getContextPath() %>/pages/admin-inventory.jsp">Inventory</a>
+      <a href="<%= request.getContextPath() %>/admin-purchaseOrder">Purchase Requests</a>
+      <a href="<%= request.getContextPath() %>/orders">Orders</a>
+      <a href="<%= request.getContextPath() %>/supplier-info">Supplier Info</a>
+      <a href="<%= request.getContextPath() %>/logout">Logout</a>
     </aside>
 
     <main class="main">

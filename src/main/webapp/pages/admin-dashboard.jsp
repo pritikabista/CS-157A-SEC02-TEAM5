@@ -20,8 +20,18 @@
   %>
 
   <div class="layout">
+
+    <!-- SIDEBAR -->
     <aside class="sidebar">
-      <h2>MedIMS Admin</h2>
+
+      <!--  LOGO + TITLE -->
+      <div style="text-align:center; padding:20px 0;">
+        <img src="<%= request.getContextPath() %>/images/logo.png"
+             alt="MedIMS Logo"
+             style="width:70px; display:block; margin:0 auto 10px; border-radius:10px;">
+        
+        <h2 style="color:white; margin:0;">MedIMS Admin</h2>
+      </div>
 
       <nav>
         <a href="<%= request.getContextPath() %>/admin-dashboard">Dashboard</a>
@@ -32,8 +42,10 @@
         <a href="<%= request.getContextPath() %>/add-item">Add Item</a>
         <a href="<%= request.getContextPath() %>/logout">Logout</a>
       </nav>
+
     </aside>
 
+    <!-- MAIN CONTENT -->
     <main class="main">
       <div class="topbar">
         <div>
@@ -70,6 +82,7 @@
         }
       %>
     </main>
+
   </div>
 
   <script src="<%= request.getContextPath() %>/js/script.js"></script>
