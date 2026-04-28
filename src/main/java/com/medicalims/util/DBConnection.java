@@ -1,14 +1,39 @@
 package com.medicalims.util;
 
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 
 public class DBConnection {
 
-    private static final String URL = System.getenv("DB_URL");
-    private static final String USER = System.getenv("DB_USER");
-    private static final String PASSWORD = System.getenv("DB_PASSWORD");
+    private static String URL;
+    private static String USER;
+    private static String PASSWORD;
+
+    static {
+        try {
+            Properties props = new Properties();
+
+            InputStream input = DBConnection.class
+                    .getClassLoader()
+                    .getResourceAsStream("db.properties");
+
+            if (input == null) {
+                throw new RuntimeException("db.properties file not found in src/main/resources");
+            }
+
+            props.load(input);
+
+            URL = props.getProperty("db.url");
+            USER = props.getProperty("db.user");
+            PASSWORD = props.getProperty("db.password");
+
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to load database configuration.", e);
+        }
+    }
 
     public static Connection getConnection() throws SQLException {
         try {
@@ -18,6 +43,7 @@ public class DBConnection {
         }
 
         System.out.println("DB URL: " + URL);
+        System.out.println("DB_USER = " + USER);
 
         return DriverManager.getConnection(URL, USER, PASSWORD);  //create connection  *****
     }

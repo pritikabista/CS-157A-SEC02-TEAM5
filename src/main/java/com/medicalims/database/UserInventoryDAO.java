@@ -84,6 +84,25 @@ public class UserInventoryDAO {
        return transactionHandlingForWithdrawal(itemReferenceNum, qty, locationID, accountID);
     }
 
+    public boolean updateItemStock(int itemReferenceNumber, int qty, int locationID) {
+        String sql = "UPDATE Inventory SET Stock = Stock + ? WHERE Item_Reference_Number = ? AND Location_ID = ?";
+    
+        try (
+            Connection con = DBConnection.getConnection();
+            PreparedStatement stmt = con.prepareStatement(sql)
+        ) {
+            stmt.setInt(1, qty);
+            stmt.setInt(2, itemReferenceNumber);
+            stmt.setInt(3, locationID);
+    
+            return stmt.executeUpdate() > 0;
+    
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     //Users can use the searchbar that accepts string (CAN BE EITHER item name or item ref num or category name)
     public List<InventoryItem> searchInventoryItems(String userInput){
         //determine if the userinput is int meaning it is the item ref number
