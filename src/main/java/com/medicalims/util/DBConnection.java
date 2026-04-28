@@ -6,9 +6,9 @@ import java.sql.SQLException;
 
 public class DBConnection {
 
-    private static final String URL = "jdbc:mysql://localhost:3306/team5?useSSL=false&serverTimezone=UTC"; 
-    private static final String USER = "root";
-    private static final String PASSWORD = "CS157DeeAein";
+    private static final String URL = System.getenv("DB_URL");
+    private static final String USER = System.getenv("DB_USER");
+    private static final String PASSWORD = System.getenv("DB_PASSWORD");
 
     public static Connection getConnection() throws SQLException {
         try {
@@ -16,6 +16,8 @@ public class DBConnection {
         } catch (ClassNotFoundException e) {
             throw new SQLException("MySQL Driver not found.", e);
         }
+
+        System.out.println("DB URL: " + URL);
 
         return DriverManager.getConnection(URL, USER, PASSWORD);  //create connection  *****
     }
