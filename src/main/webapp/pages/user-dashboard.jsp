@@ -57,7 +57,7 @@
           <p class="hero-label">Employee Portal</p>
           <h1>Welcome, <%= user.getUsername() %></h1>
           <p class="hero-text">Account ID: <%= user.getAccountID() %></p>
-          <p class="hero-text">Department ID: <%= user.getDepartmentID() %></p>
+          <p class="hero-text">Department: <%= request.getAttribute("departmentName") %></p>
           <p class="hero-text">Track inventory, review item status, and submit requests for your department.</p>
         </div>
 
