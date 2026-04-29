@@ -36,3 +36,4 @@ target/
 # MySQL Login Credentials
 src/main/resources/db.properties
 src/main/resources/db.properties
+src/main/resources/db.properties.local
