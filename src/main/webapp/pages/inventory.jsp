@@ -8,8 +8,6 @@
     User user = (User) session.getAttribute("user");
     Admin admin = (Admin) session.getAttribute("admin");
 
-    boolean isAdmin = (admin != null);
-
     if (user == null && admin == null) {
         response.sendRedirect(request.getContextPath() + "/pages/login.jsp");
         return;
@@ -199,80 +197,99 @@
     </script>
 </head>
 <body>
-    <main class="main" style="margin-left: 0;">
-        <div class="inventory-page">
-            <div class="topbar">
-                <div>
-                    <h1>Inventory</h1>
-                    <p>View available medical inventory and withdraw items.</p>
-                </div>
+<main class="main" style="margin-left: 0;">
+<div class="inventory-page">
 
-                <div class="topbar-links">
-                    <% if (admin != null) { %>
-                        <a href="<%= request.getContextPath() %>/admin-dashboard" class="primary-btn">Dashboard</a>
-                    <% } else { %>
-                        <a href="<%= request.getContextPath() %>/user-dashboard" class="primary-btn">Dashboard</a>
-                    <% } %>
-                    <a href="${pageContext.request.contextPath}/logout" class="secondary-btn">Logout</a>
-                </div>
-            </div>
+    <div class="topbar">
+        <h1>Inventory</h1>
 
-            <div class="card" style="margin-top: 20px;">
-                <div class="toolbar">
-                    <form action="inventory" method="post" class="search-form">
-                        <input type="text" name="search"
-                               placeholder="Search by item name, item ref #, or category name"
-                               value="<%= search %>">
-                        <button type="submit">Search</button>
-                        <a href="inventory">Reset</a>
-                    </form>
+        <div>
+            <% if (admin != null) { %>
+                <a href="${pageContext.request.contextPath}/admin-dashboard">Dashboard</a>
+            <% } else { %>
+                <a href="${pageContext.request.contextPath}/user-dashboard">Dashboard</a>
+            <% } %>
 
-                    <form action="inventory" method="post" class="filter-form">
-                        <select name="filterType" id="filterType" onchange="updateFilterOptions()">
-                            <option value="">Select Filter</option>
-                            <option value="location" <%= "location".equals(filterType) ? "selected" : "" %>>By Location</option>
-                            <option value="lot" <%= "lot".equals(filterType) ? "selected" : "" %>>By Lot Number</option>
-                            <option value="expiration" <%= "expiration".equals(filterType) ? "selected" : "" %>>Nearest Expiration Date</option>
-                            <option value="lowStock" <%= "lowStock".equals(filterType) ? "selected" : "" %>>Low Stock</option>
-                        </select>
+            <a href="${pageContext.request.contextPath}/logout">Logout</a>
+        </div>
+    </div>
 
-                        <span id="filterValueContainer"></span>
+    <div class="card">
 
-                        <button type="submit">Apply Filter</button>
-                        <a href="inventory">Reset</a>
-                    </form>
-                </div>
+        <!-- SEARCH -->
+        <form action="${pageContext.request.contextPath}/inventory" method="post">
+            <input type="text" name="search" value="<%= search %>" placeholder="Search...">
+            <button type="submit">Search</button>
+            <a href="${pageContext.request.contextPath}/inventory">Reset</a>
+        </form>
 
-                <% if (errorMessage != null) { %>
-                    <div class="error"><%= errorMessage %></div>
+        <!-- FILTER -->
+        <form action="${pageContext.request.contextPath}/inventory" method="post">
+            <select name="filterType">
+                <option value="">Select Filter</option>
+                <option value="location" <%= "location".equals(filterType) ? "selected" : "" %>>Location</option>
+                <option value="lot" <%= "lot".equals(filterType) ? "selected" : "" %>>Lot</option>
+                <option value="expiration" <%= "expiration".equals(filterType) ? "selected" : "" %>>Expiration</option>
+                <option value="lowStock" <%= "lowStock".equals(filterType) ? "selected" : "" %>>Low Stock</option>
+            </select>
+
+            <input type="text" name="filterValue" value="<%= filterValue %>" placeholder="Enter value">
+            <button type="submit">Apply</button>
+            <a href="${pageContext.request.contextPath}/inventory">Reset</a>
+        </form>
+
+        <!-- ERROR -->
+        <% if (errorMessage != null) { %>
+            <p style="color:red;"><%= errorMessage %></p>
+        <% } %>
+
+        <!-- TABLE -->
+        <table border="1">
+            <tr>
+                <th>Ref #</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Lot</th>
+                <th>Expiry</th>
+                <th>Qty</th>
+                <th>Location</th>
+            </tr>
+
+            <% if (inventoryItems != null && !inventoryItems.isEmpty()) { %>
+                <% for (InventoryItem item : inventoryItems) { %>
+                    <tr>
+                        <td><%= item.getItemReferenceNumber() %></td>
+                        <td><%= item.getItemName() %></td>
+                        <td><%= item.getCategoryName() %></td>
+                        <td><%= item.getLotNumber() %></td>
+                        <td><%= item.getExpirationDate() %></td>
+                        <td><%= item.getStock() %></td>
+                        <td><%= item.getLocation() %></td>
+                    </tr>
+
+                    <!-- WITHDRAW -->
+                    <tr>
+                        <td colspan="7">
+                            <form action="${pageContext.request.contextPath}/inventory" method="post">
+                                <input type="hidden" name="action" value="withdraw">
+                                <input type="hidden" name="itemReferenceNumber" value="<%= item.getItemReferenceNumber() %>">
+                                <input type="hidden" name="locationID" value="<%= item.getLocationID() %>">
+
+                                Qty:
+                                <input type="number" name="qty" min="1" required>
+
+                                <button type="submit">Withdraw</button>
+                            </form>
+                        </td>
+                    </tr>
                 <% } %>
+            <% } else { %>
+                <tr>
+                    <td colspan="7">No items found</td>
+                </tr>
+            <% } %>
 
-                <div class="table-wrap">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Item Ref #</th>
-                                <th>Item Name</th>
-                                <th>Category</th>
-                                <th>Lot #</th>
-                                <th>Expiration Date</th>
-                                <th>Quantity</th>
-                                <th>Location</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% if (inventoryItems != null && !inventoryItems.isEmpty()) { %>
-                                <% int i = 0; %>
-                                <% for (InventoryItem item : inventoryItems) { %>
-                                    <tr data-row-index="<%= i %>" onclick="toggleRow(this.dataset.rowIndex)" style="cursor:pointer;">
-                                        <td><%= item.getItemReferenceNumber() %></td>
-                                        <td><%= item.getItemName() %></td>
-                                        <td><%= item.getCategoryName() %></td>
-                                        <td><%= item.getLotNumber() %></td>
-                                        <td><%= item.getExpirationDate() != null ? item.getExpirationDate() : "" %></td>
-                                        <td><%= item.getStock() %></td>
-                                        <td><%= item.getLocation() %></td>
-                                    </tr>
+        </table>
 
                                     <tr id="expand-<%= i %>" class="expandable-row">
                                         <td colspan="7">
@@ -282,39 +299,27 @@
                                                     <input type="hidden" name="itemReferenceNumber" value="<%= item.getItemReferenceNumber() %>">
                                                     <input type="hidden" name="locationID" value="<%= item.getLocationID() %>">
 
-                                                    Withdraw Qty:
+                                                    <label>Add Qty:</label>
                                                     <input type="number" name="qty" min="1" required>
 
-                                                    <button type="submit">Withdraw</button>
+                                                    <button type="submit">Add Stock</button>
                                                 </form>
-                                                <% if (admin != null) { %>
-                                                    <form action="inventory" method="post" style="margin-top:10px;">
-                                                        <input type="hidden" name="action" value="update">
-                                                        <input type="hidden" name="itemReferenceNumber" value="<%= item.getItemReferenceNumber() %>">
-                                                        <input type="hidden" name="locationID" value="<%= item.getLocationID() %>">
-                                                
-                                                        Add Qty:
-                                                        <input type="number" name="qty" min="1" required>
-                                                
-                                                        <button type="submit">Add Stock</button>
-                                                    </form>
-                                                <% } %>
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    <% i++; %>
-                                <% } %>
-                            <% } else { %>
-                                <tr>
-                                    <td colspan="7" class="no-data">No inventory items found.</td>
+                                            <% } %>
+                                        </div>
+                                    </td>
                                 </tr>
                             <% } %>
-                        </tbody>
-                    </table>
-                </div>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="7" class="no-data">No inventory items found.</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
             </div>
+
         </div>
-    </main>
+    </div>
+</main>
 </body>
 </html>

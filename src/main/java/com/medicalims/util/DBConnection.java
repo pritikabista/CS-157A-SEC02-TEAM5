@@ -15,14 +15,9 @@ public class DBConnection {
     static {
         try {
             Properties props = new Properties();
-
             InputStream input = DBConnection.class
                     .getClassLoader()
                     .getResourceAsStream("db.properties");
-
-            if (input == null) {
-                throw new RuntimeException("db.properties file not found in src/main/resources");
-            }
 
             props.load(input);
 
@@ -31,20 +26,17 @@ public class DBConnection {
             PASSWORD = props.getProperty("db.password");
 
         } catch (Exception e) {
-            throw new RuntimeException("Failed to load database configuration.", e);
+            e.printStackTrace();
         }
     }
 
     public static Connection getConnection() throws SQLException {
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver"); //load MySQL driver so that we can talk to database *****
+            Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {
             throw new SQLException("MySQL Driver not found.", e);
         }
 
-        System.out.println("DB URL: " + URL);
-        System.out.println("DB_USER = " + USER);
-
-        return DriverManager.getConnection(URL, USER, PASSWORD);  //create connection  *****
+        return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 }
