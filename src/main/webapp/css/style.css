@@ -840,10 +840,10 @@ tbody tr.data-row:hover,
 
 /* center everything properly */
 .brand-row {
-  display: inline-flex;   /* key change */
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;               /* smaller gap = closer logo */
+  gap: 4px;
 }
 
 /* text */
@@ -852,7 +852,7 @@ tbody tr.data-row:hover,
 }
 
 .brand-row .logo {
-  width: 60px;   /* increase from 42 → 60 */
+  width: 60px;
   height: 60px;
   object-fit: contain;
 }
@@ -951,7 +951,6 @@ tbody tr.data-row:hover,
   height: 42px;
   padding: 0 16px;
 }
-
 
 /* ===== PURCHASE REQUESTS PAGE UI FIX ===== */
 
@@ -1056,4 +1055,56 @@ tbody tr.data-row:hover,
   height: 60px !important;
   object-fit: contain;
   display: inline-block;
+}
+
+.user-orders-page {
+  padding: 28px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.user-orders-page .action-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.user-orders-page .action-row a,
+.user-orders-page .toolbar a,
+.user-orders-page .empty-state a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 46px;
+  padding: 0 18px;
+  border-radius: 10px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.user-orders-page a.primary-btn {
+  background: var(--primary);
+  color: white;
+}
+
+.user-orders-page a.secondary-btn {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.user-orders-page a.gray-btn {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.user-orders-page .toolbar {
+  display: grid;
+  grid-template-columns: 1fr 180px 160px;
+  gap: 12px;
+  align-items: center;
+}
+
+.user-orders-page .empty-state {
+  text-align: center;
+  padding: 42px 20px;
 }

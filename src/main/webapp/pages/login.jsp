@@ -20,7 +20,7 @@
           
         </div>
 
-        <p class="tagline">Medical Inventory Management System</p>
+        <p mvn clean packageclass="tagline">Medical Inventory Management System</p>
       </div>
 
       <form action="${pageContext.request.contextPath}/login" method="post">
