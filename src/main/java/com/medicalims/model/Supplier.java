@@ -18,11 +18,27 @@ public class Supplier {
         this.url = url;
     }
 
-    void setSupplierID(int supplierID) { this.supplierID = supplierID; }
-    void setPhNum(String phNum) { this.phNum = phNum; }
-    void setUrl(String url) { this.url = url; }
+    public void setSupplierID(int supplierID) {
+        this.supplierID = supplierID;
+    }
 
-    int getSupplierID() { return this.supplierID; }
-    String getPhNum() { return this.phNum; }
-    String getUrl() { return this.url; }
+    public void setPhNum(String phNum) {
+        this.phNum = phNum;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public int getSupplierID() {
+        return this.supplierID;
+    }
+
+    public String getPhNum() {
+        return this.phNum;
+    }
+
+    public String getUrl() {
+        return this.url;
+    }
 }

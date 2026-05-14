@@ -130,6 +130,11 @@ public class InventoryServlet extends HttpServlet {
                 if (qty <= 0) {
                     request.setAttribute("errorMessage", "Update quantity must be greater than 0");
                 } else {
+                    System.out.println("UPDATE ACTION HIT");
+                    System.out.println("itemReferenceNumber = " + itemReferenceNumber);
+                    System.out.println("locationID = " + locationID);
+                    System.out.println("qty = " + qty);
+
                     boolean success = userInventoryDAO.updateItemStock(itemReferenceNumber, qty, locationID);
         
                     if (!success) {
