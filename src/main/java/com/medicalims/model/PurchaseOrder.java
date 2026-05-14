@@ -14,6 +14,8 @@ public class PurchaseOrder {
     private String itemName;
     private String username;
 
+    private String supplierName;
+
     public PurchaseOrder() {
         this.orderID = 0;
         this.itemReferenceNum = 0;
@@ -84,4 +86,11 @@ public class PurchaseOrder {
 
     public String getItemName() { return this.itemName; }
     public String getUsername() { return this.username; }
+
+    public void setSupplierName(String supplierName) {
+        this.supplierName = supplierName;
+    }
+    public String getSupplierName() {
+        return this.supplierName;
+    }
 }

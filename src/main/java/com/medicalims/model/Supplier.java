@@ -5,6 +5,7 @@ public class Supplier {
     private int supplierID;
     private String phNum;
     private String url;
+    private String supplierName;
 
     public Supplier() {
         this.supplierID = 0;
@@ -12,8 +13,9 @@ public class Supplier {
         this.url = "";
     }
 
-    public Supplier(int supplierID, String phNum, String url) {
+    public Supplier(int supplierID, String supplierName, String phNum, String url) {
         this.supplierID = supplierID;
+        this.supplierName = supplierName;
         this.phNum = phNum;
         this.url = url;
     }
@@ -40,5 +42,9 @@ public class Supplier {
 
     public String getUrl() {
         return this.url;
+    }
+
+    public String getSupplierName(){
+        return this.supplierName;
     }
 }

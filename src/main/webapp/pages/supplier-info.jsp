@@ -42,8 +42,6 @@
 
       <% if (approvedMode) { %>
 
-        <!-- FILTERED SUPPLIER VIEW -->
-
         <div class="card" style="margin-top: 20px;">
 
           <h3 style="margin-bottom: 16px; color: #156f74;">
@@ -93,21 +91,25 @@
             </table>
           </div>
 
-          <div style="margin-top: 20px;">
-            <a
-              href="<%= request.getContextPath() %>/supplier-info"
-              class="primary-btn"
-              style="text-decoration:none;"
-            >
-              View All Suppliers
-            </a>
+          <div class="action-row mt-16">
+
+            <form action="<%= request.getContextPath() %>/supplier-info" method="get">
+                <button type="submit" class="gray-btn">
+                    View All Suppliers
+                </button>
+            </form>
+
+            <form action="<%= request.getContextPath() %>/admin-purchaseOrder" method="get">
+                <button type="submit" class="primary-btn">
+                    Complete
+                </button>
+            </form>
+
           </div>
 
         </div>
 
       <% } else { %>
-
-        <!-- NORMAL SUPPLIER PAGE -->
 
         <div class="card" style="margin-top: 20px;">
 

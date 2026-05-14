@@ -75,6 +75,19 @@ public class PurchaseOrderDAO {
         return executeQueryForAdmins(sql_query, status.toString()); 
     }
 
+    public List<PurchaseOrder> getApprovedPurchaseOrdersForOrdersPage() {
+        String sql_query = "SELECT p.Order_ID, p.Item_Reference_Number, p.Status, p.Approved_By, " +
+                            "r.User_ID, p.Message, p.Qty, a.Username, t.Item_Name, s.Supplier_Name " +
+                            "FROM Purchase_orders p " +
+                            "JOIN Requests r ON p.Order_ID = r.Order_ID " +
+                            "JOIN Accounts a ON r.User_ID = a.Account_ID " +
+                            "JOIN Items t ON t.Item_Reference_Number = p.Item_Reference_Number " +
+                            "JOIN Supplies sp ON p.Item_Reference_Number = sp.Item_Reference_Number " +
+                            "JOIN Suppliers s ON sp.Supplier_ID = s.Supplier_ID " +
+                            "WHERE p.Status = 'APPROVED' OR p.Status = 'DENIED'";
+
+        return executeQueryForAdmins(sql_query);
+    }
     
     private List<PurchaseOrder> executeQuery(String sql_query, Object... params){ //Object = variable number of parameters
         List<PurchaseOrder> purchaseOrders = new ArrayList<>(); 
@@ -138,7 +151,18 @@ public class PurchaseOrderDAO {
                 String itemName = rs.getString("Item_Name");
                 String username = rs.getString("Username");
 
-                purchaseOrders.add(new PurchaseOrder(orderID, itemReferenceNum, itemName, status, approvedBy, userID, username, message, qty));
+                PurchaseOrder order =
+                    new PurchaseOrder(orderID, itemReferenceNum, itemName,
+                    status, approvedBy, userID, username, message, qty);
+
+                try {
+                    String supplierName = rs.getString("Supplier_Name");
+                    order.setSupplierName(supplierName);
+                } catch (Exception e) {
+                    // ignore if query doesn't include supplier name
+                }
+
+                purchaseOrders.add(order);
 
             }
 

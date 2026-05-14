@@ -60,10 +60,7 @@
             <div class="card">
                 <form class="toolbar" method="get" action="<%= request.getContextPath() %>/admin-purchaseOrder">
                     <select name="status">
-                        <option value="" <%= selectedStatus.isEmpty() ? "selected" : "" %>>All</option>
-                        <option value="PENDING" <%= "PENDING".equals(selectedStatus) ? "selected" : "" %>>Pending</option>
-                        <option value="APPROVED" <%= "APPROVED".equals(selectedStatus) ? "selected" : "" %>>Approved</option>
-                        <option value="DENIED" <%= "DENIED".equals(selectedStatus) ? "selected" : "" %>>Denied</option>
+                        <option value="PENDING" selected>Pending</option>
                     </select>
 
                     <button type="submit">Apply</button>

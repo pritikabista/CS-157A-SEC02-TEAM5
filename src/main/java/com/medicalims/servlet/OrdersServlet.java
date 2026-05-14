@@ -4,8 +4,11 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
+import java.util.List;
 
+import com.medicalims.database.PurchaseOrderDAO;
 import com.medicalims.model.Admin;
+import com.medicalims.model.PurchaseOrder;
 
 @WebServlet("/orders")
 public class OrdersServlet extends HttpServlet {
@@ -16,21 +19,16 @@ public class OrdersServlet extends HttpServlet {
 
         HttpSession session = request.getSession(false);
 
-        // 🔐 Check login
-        if (session == null) {
+        if (session == null || session.getAttribute("admin") == null) {
             response.sendRedirect(request.getContextPath() + "/pages/login.jsp");
             return;
         }
 
-        Admin admin = (Admin) session.getAttribute("admin");
+        PurchaseOrderDAO dao = new PurchaseOrderDAO();
+        List<PurchaseOrder> orders = dao.getApprovedPurchaseOrdersForOrdersPage();
 
-        if (admin == null) {
-            response.sendRedirect(request.getContextPath() + "/pages/login.jsp");
-            return;
-        }
+        request.setAttribute("orders", orders);
 
-        // ✅ Forward to JSP
-        request.getRequestDispatcher("/pages/orders.jsp")
-               .forward(request, response);
+        request.getRequestDispatcher("/pages/orders.jsp").forward(request, response);
     }
 }

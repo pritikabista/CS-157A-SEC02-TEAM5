@@ -42,19 +42,25 @@ public class AdminSeeAllUserPurchaseOrdersServlet extends HttpServlet {
         List<PurchaseOrder> purchaseOrders;
 
         if (statusString == null || statusString.trim().isEmpty()) {
-            statusString = "";
-            purchaseOrders = purchaseOrderDAO.getAllPurchaseOrders();
-        } else {
-            statusString = statusString.trim().toUpperCase();
+            statusString = "PENDING";
+        }
 
-            try {
-                OrderStatus status = OrderStatus.valueOf(statusString);
-                purchaseOrders = purchaseOrderDAO.getPurchaseOrdersByStatusForAdmin(status);
-            } catch (IllegalArgumentException e) {
-                request.setAttribute("error", "Invalid status!");
-                statusString = "";
-                purchaseOrders = purchaseOrderDAO.getAllPurchaseOrders();
+        statusString = statusString.trim().toUpperCase();
+
+        try {
+            OrderStatus status = OrderStatus.valueOf(statusString);
+
+            if (status == OrderStatus.PENDING) {
+                purchaseOrders = purchaseOrderDAO.getPurchaseOrdersByStatusForAdmin(OrderStatus.PENDING);
+            } else {
+                statusString = "PENDING";
+                purchaseOrders = purchaseOrderDAO.getPurchaseOrdersByStatusForAdmin(OrderStatus.PENDING);
             }
+
+        } catch (IllegalArgumentException e) {
+            request.setAttribute("error", "Invalid status!");
+            statusString = "PENDING";
+            purchaseOrders = purchaseOrderDAO.getPurchaseOrdersByStatusForAdmin(OrderStatus.PENDING);
         }
 
         request.setAttribute("selectedStatus", statusString);

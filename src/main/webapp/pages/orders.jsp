@@ -1,4 +1,13 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page import="java.util.List" %>
+<%@ page import="com.medicalims.model.PurchaseOrder" %>
+
+<%
+  List<PurchaseOrder> orders =
+      (List<PurchaseOrder>) request.getAttribute("orders");
+%>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,48 +48,35 @@
           </thead>
 
           <tbody>
-            <tr>
-              <td>#ORD-001</td>
-              <td>Surgical Gloves</td>
-              <td>MedSupply Co.</td>
-              <td><span class="badge badge-process">In Process</span></td>
-              <td>
-                <button class="primary-btn" onclick="approveOrder(this)">Approve</button>
-                <button class="secondary-btn" onclick="toggleStatus(this)">Mark Done</button>
-              </td>
-            </tr>
+            <% if (orders != null && !orders.isEmpty()) { %>
 
-            <tr>
-              <td>#ORD-002</td>
-              <td>IV Fluids</td>
-              <td>HealthCorp Ltd.</td>
-              <td><span class="badge badge-done">Done</span></td>
-              <td>
-                <button class="secondary-btn" onclick="toggleStatus(this)">Set In Process</button>
-              </td>
-            </tr>
+              <% for (PurchaseOrder order : orders) { %>
+                <tr>
+                  <td>#ORD-<%= order.getOrderID() %></td>
+                  <td><%= order.getItemName() %></td>
+                  <td><%= order.getSupplierName() %></td>
+                  <td>
+                    <% if (order.getStatus().toString().equals("APPROVED")) { %>
+                      <span class="badge badge-process">In Process</span>
+                    <% } else if (order.getStatus().toString().equals("DENIED")) { %>
+                      <span class="badge badge-exp">Denied</span>
+                    <% } %>
+                  </td>
+                  <td>
+                    <button class="secondary-btn" onclick="toggleStatus(this)">
+                      Mark Done
+                    </button>
+                  </td>
+                </tr>
+              <% } %>
 
-            <tr>
-              <td>#ORD-003</td>
-              <td>Syringes</td>
-              <td>CarePlus Inc.</td>
-              <td><span class="badge badge-process">In Process</span></td>
-              <td>
-                <button class="primary-btn" onclick="approveOrder(this)">Approve</button>
-                <button class="secondary-btn" onclick="toggleStatus(this)">Mark Done</button>
-              </td>
-            </tr>
+            <% } else { %>
 
-            <tr>
-              <td>#ORD-004</td>
-              <td>Face Masks</td>
-              <td>SafeMed Supplies</td>
-              <td><span class="badge badge-process">In Process</span></td>
-              <td>
-                <button class="primary-btn" onclick="approveOrder(this)">Approve</button>
-                <button class="secondary-btn" onclick="toggleStatus(this)">Mark Done</button>
-              </td>
-            </tr>
+              <tr>
+                <td colspan="5">No orders in process.</td>
+              </tr>
+
+            <% } %>
           </tbody>
         </table>
       </div>
@@ -98,12 +94,6 @@
 </div>
 
 <script>
-  function approveOrder(button) {
-    const row = button.closest("tr");
-    const statusCell = row.cells[3];
-    statusCell.innerHTML = '<span class="badge badge-process">In Process</span>';
-    alert("Order Approved!");
-  }
 
   function toggleStatus(button) {
     const row = button.closest("tr");

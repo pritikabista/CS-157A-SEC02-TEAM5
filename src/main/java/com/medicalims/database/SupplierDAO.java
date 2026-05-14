@@ -17,7 +17,7 @@ public class SupplierDAO {
         List<Supplier> suppliers = new ArrayList<>();
 
         String sql =
-            "SELECT Supplier_ID, Phone_Number, Url " +
+            "SELECT Supplier_ID, Supplier_Name, Phone_Number, Url " +
             "FROM Suppliers";
 
         try {
@@ -36,8 +36,10 @@ public class SupplierDAO {
 
                 String url = rs.getString("Url");
 
+                String supplierName = rs.getString("Supplier_Name");
+
                 Supplier supplier =
-                    new Supplier(supplierID, phNum, url);
+                    new Supplier(supplierID, supplierName, phNum, url);
 
                 suppliers.add(supplier);
             }
@@ -58,7 +60,7 @@ public class SupplierDAO {
 
         Supplier supplier = null;
 
-        String sql = "SELECT s.Supplier_ID, s.Phone_Number, s.Url " +
+        String sql = "SELECT s.Supplier_ID, s.Supplier_Name, s.Phone_Number, s.Url " +
                     "FROM Purchase_orders p " +
                     "JOIN Supplies sp ON p.Item_Reference_Number = sp.Item_Reference_Number " +
                     "JOIN Suppliers s ON sp.Supplier_ID = s.Supplier_ID " +
@@ -82,8 +84,10 @@ public class SupplierDAO {
 
                 String url = rs.getString("Url");
 
+                String supplierName = rs.getString("Supplier_Name");
+
                 supplier =
-                    new Supplier(supplierID, phNum, url);
+                    new Supplier(supplierID, supplierName, phNum, url);
             }
 
             rs.close();
