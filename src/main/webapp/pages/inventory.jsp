@@ -14,19 +14,13 @@
     }
 
     String search = (String) request.getAttribute("search");
-    if (search == null) {
-        search = "";
-    }
+    if (search == null) search = "";
 
     String filterType = (String) request.getAttribute("filterType");
-    if (filterType == null) {
-        filterType = "";
-    }
+    if (filterType == null) filterType = "";
 
     String filterValue = (String) request.getAttribute("filterValue");
-    if (filterValue == null) {
-        filterValue = "";
-    }
+    if (filterValue == null) filterValue = "";
 
     List<InventoryItem> inventoryItems =
             (List<InventoryItem>) request.getAttribute("inventoryItems");
@@ -38,288 +32,182 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MedIMS Inventory</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css" />
-    <style>
-        .inventory-page {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 30px;
-        }
-
-        .topbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .topbar-links {
-            display: flex;
-            gap: 15px;
-        }
-
-        .topbar-links a {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 10px 18px;
-            border-radius: 10px;
-            font-size: 15px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
-        }
-
-        .topbar-links .primary-btn {
-            background-color: #0f766e;
-            color: #ffffff;
-            border: 1px solid #0f766e;
-        }
-
-        .topbar-links .primary-btn:hover {
-            background-color: #0b5e57;
-            border-color: #0b5e57;
-            transform: translateY(-1px);
-        }
-
-        .topbar-links .secondary-btn {
-            background-color: #ffffff;
-            color: #0f766e;
-            border: 1px solid #cbd5e1;
-        }
-
-        .topbar-links .secondary-btn:hover {
-            background-color: #f8fafc;
-            border-color: #94a3b8;
-            transform: translateY(-1px);
-        }
-
-        .search-form,
-        .filter-form {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 15px;
-        }
-
-        .search-form input[type="text"],
-        .filter-form select,
-        .filter-form input[type="text"] {
-            padding: 8px;
-            font-size: 14px;
-        }
-
-        .search-form input[type="text"] {
-            min-width: 320px;
-        }
-
-        .expandable-row {
-            display: none;
-            background-color: #eef3f7;
-        }
-
-        .expandable-content {
-            padding: 18px 12px;
-            min-height: 70px;
-        }
-
-        .expandable-content input[type="number"] {
-            padding: 6px;
-            margin-left: 8px;
-            margin-right: 10px;
-            width: 80px;
-        }
-
-        .expandable-content button {
-            padding: 6px 10px;
-            cursor: pointer;
-        }
-
-        .no-data {
-            text-align: center;
-            padding: 20px;
-        }
-
-        .error {
-            color: red;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-    </style>
-
-    <script>
-        function updateFilterOptions() {
-            const filterType = document.getElementById("filterType").value;
-            const container = document.getElementById("filterValueContainer");
-            const savedFilterValue = "<%= filterValue %>";
-
-            if (filterType === "location") {
-                container.innerHTML =
-                    '<select name="filterValue" id="filterValue">' +
-                    '<option value="">Select Location</option>' +
-                    '<option value="1">B1-R101</option>' +
-                    '<option value="2">B1-R102</option>' +
-                    '<option value="3">B1-R103</option>' +
-                    '<option value="4">B2-R201</option>' +
-                    '<option value="5">B2-R202</option>' +
-                    '<option value="6">B2-R203</option>' +
-                    '<option value="7">B3-R301</option>' +
-                    '<option value="8">B3-R302</option>' +
-                    '<option value="9">B3-R303</option>' +
-                    '<option value="10">B1-R100</option>' +
-                    '</select>';
-
-                document.getElementById("filterValue").value = savedFilterValue;
-            }
-            else if (filterType === "lot") {
-                container.innerHTML =
-                    '<input type="text" name="filterValue" placeholder="Enter Lot Number" value="' + savedFilterValue + '">';
-            }
-            else {
-                container.innerHTML = '';
-            }
-        }
-
-        function toggleRow(index) {
-            const row = document.getElementById("expand-" + index);
-            if (row.style.display === "table-row") {
-                row.style.display = "none";
-            } else {
-                row.style.display = "table-row";
-            }
-        }
-
-        window.onload = function() {
-            updateFilterOptions();
-        };
-    </script>
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css" />
 </head>
+
 <body>
-<main class="main" style="margin-left: 0;">
-<div class="inventory-page">
+<div class="layout">
 
-    <div class="topbar">
-        <h1>Inventory</h1>
-
-        <div>
-            <% if (admin != null) { %>
-                <a href="${pageContext.request.contextPath}/admin-dashboard">Dashboard</a>
-            <% } else { %>
-                <a href="${pageContext.request.contextPath}/user-dashboard">Dashboard</a>
-            <% } %>
-
-            <a href="${pageContext.request.contextPath}/logout">Logout</a>
-        </div>
-    </div>
-
-    <div class="card">
-
-        <!-- SEARCH -->
-        <form action="${pageContext.request.contextPath}/inventory" method="post">
-            <input type="text" name="search" value="<%= search %>" placeholder="Search...">
-            <button type="submit">Search</button>
-            <a href="${pageContext.request.contextPath}/inventory">Reset</a>
-        </form>
-
-        <!-- FILTER -->
-        <form action="${pageContext.request.contextPath}/inventory" method="post">
-            <select name="filterType">
-                <option value="">Select Filter</option>
-                <option value="location" <%= "location".equals(filterType) ? "selected" : "" %>>Location</option>
-                <option value="lot" <%= "lot".equals(filterType) ? "selected" : "" %>>Lot</option>
-                <option value="expiration" <%= "expiration".equals(filterType) ? "selected" : "" %>>Expiration</option>
-                <option value="lowStock" <%= "lowStock".equals(filterType) ? "selected" : "" %>>Low Stock</option>
-            </select>
-
-            <input type="text" name="filterValue" value="<%= filterValue %>" placeholder="Enter value">
-            <button type="submit">Apply</button>
-            <a href="${pageContext.request.contextPath}/inventory">Reset</a>
-        </form>
-
-        <!-- ERROR -->
-        <% if (errorMessage != null) { %>
-            <p style="color:red;"><%= errorMessage %></p>
+    <aside class="sidebar">
+        <% if (admin != null) { %>
+            <h2>MedIMS Admin</h2>
+            <a href="<%= request.getContextPath() %>/admin-dashboard">Dashboard</a>
+            <a href="<%= request.getContextPath() %>/inventory" class="active">Inventory</a>
+            <a href="<%= request.getContextPath() %>/admin-purchaseOrder">Purchase Requests</a>
+            <a href="<%= request.getContextPath() %>/orders">Orders</a>
+            <a href="<%= request.getContextPath() %>/supplier-info">Supplier Info</a>
+            <a href="<%= request.getContextPath() %>/logout">Logout</a>
+        <% } else { %>
+            <h2>MedIMS User</h2>
+            <a href="<%= request.getContextPath() %>/user-dashboard">Dashboard</a>
+            <a href="<%= request.getContextPath() %>/inventory" class="active">Inventory</a>
+            <a href="<%= request.getContextPath() %>/user-myRequests">My Requests</a>
+            <a href="<%= request.getContextPath() %>/logout">Logout</a>
         <% } %>
+    </aside>
 
-        <!-- TABLE -->
-        <table border="1">
-            <tr>
-                <th>Ref #</th>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Lot</th>
-                <th>Expiry</th>
-                <th>Qty</th>
-                <th>Location</th>
-            </tr>
+    <main class="main">
+        <div class="inventory-page">
 
-            <% if (inventoryItems != null && !inventoryItems.isEmpty()) { %>
-                <% for (InventoryItem item : inventoryItems) { %>
-                    <tr>
-                        <td><%= item.getItemReferenceNumber() %></td>
-                        <td><%= item.getItemName() %></td>
-                        <td><%= item.getCategoryName() %></td>
-                        <td><%= item.getLotNumber() %></td>
-                        <td><%= item.getExpirationDate() %></td>
-                        <td><%= item.getStock() %></td>
-                        <td><%= item.getLocation() %></td>
-                    </tr>
+            <div class="topbar">
+                <div>
+                    <h1>Inventory</h1>
+                    <p>Manage and track medical inventory items</p>
+                </div>
 
-                    <!-- WITHDRAW -->
-                    <tr>
-                        <td colspan="7">
-                            <form action="${pageContext.request.contextPath}/inventory" method="post">
-                                <input type="hidden" name="action" value="withdraw">
-                                <input type="hidden" name="itemReferenceNumber" value="<%= item.getItemReferenceNumber() %>">
-                                <input type="hidden" name="locationID" value="<%= item.getLocationID() %>">
-
-                                Qty:
-                                <input type="number" name="qty" min="1" required>
-
-                                <button type="submit">Withdraw</button>
-                            </form>
-                        </td>
-                    </tr>
+                <% if (admin != null) { %>
+                    <button class="primary-btn"
+                        onclick="window.location.href='<%= request.getContextPath() %>/pages/add-item.jsp'">
+                        Add New Item
+                    </button>
                 <% } %>
-            <% } else { %>
-                <tr>
-                    <td colspan="7">No items found</td>
-                </tr>
-            <% } %>
-
-        </table>
-
-                                    <tr id="expand-<%= i %>" class="expandable-row">
-                                        <td colspan="7">
-                                            <div class="expandable-content">
-                                                <form action="inventory" method="post">
-                                                    <input type="hidden" name="action" value="withdraw">
-                                                    <input type="hidden" name="itemReferenceNumber" value="<%= item.getItemReferenceNumber() %>">
-                                                    <input type="hidden" name="locationID" value="<%= item.getLocationID() %>">
-
-                                                    <label>Add Qty:</label>
-                                                    <input type="number" name="qty" min="1" required>
-
-                                                    <button type="submit">Add Stock</button>
-                                                </form>
-                                            <% } %>
-                                        </div>
-                                    </td>
-                                </tr>
-                            <% } %>
-                        <% } else { %>
-                            <tr>
-                                <td colspan="7" class="no-data">No inventory items found.</td>
-                            </tr>
-                        <% } %>
-                    </tbody>
-                </table>
             </div>
 
+            <div class="card">
+
+                <!-- Search + Filter -->
+                <form action="<%= request.getContextPath() %>/inventory" method="post" class="toolbar">
+                    <input type="text" name="search" value="<%= search %>" placeholder="Search inventory..." />
+
+                    <select name="filterType">
+                        <option value="">Filter</option>
+                        <option value="location" <%= "location".equals(filterType) ? "selected" : "" %>>Location</option>
+                        <option value="lot" <%= "lot".equals(filterType) ? "selected" : "" %>>Lot</option>
+                        <option value="expiration" <%= "expiration".equals(filterType) ? "selected" : "" %>>Expiration</option>
+                        <option value="lowStock" <%= "lowStock".equals(filterType) ? "selected" : "" %>>Low Stock</option>
+                    </select>
+
+                    <input type="text" name="filterValue" value="<%= filterValue %>" placeholder="Filter value" />
+
+                    <button type="submit" class="primary-btn">Apply</button>
+                    <a href="<%= request.getContextPath() %>/inventory" class="gray-btn">Reset</a>
+                </form>
+
+                <% if (errorMessage != null) { %>
+                    <p style="color:red; margin-bottom: 15px;"><%= errorMessage %></p>
+                <% } %>
+
+                <!-- Table -->
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Ref #</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Lot</th>
+                            <th>Expiry</th>
+                            <th>Location</th>
+                            <th>Qty</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <% if (inventoryItems != null && !inventoryItems.isEmpty()) { %>
+
+                            <% for (InventoryItem item : inventoryItems) { 
+                                String rowId = "row" + String.valueOf(item.getItemReferenceNumber());
+                            %>
+
+                            <!-- Main Row -->
+                            <tr class="clickable-row <%= item.getStock() <= 10 ? "low-stock-row" : "" %>"
+                                onclick="toggleExpand('<%= rowId %>')">
+                                <td><%= item.getItemReferenceNumber() %></td>
+                                <td><%= item.getItemName() %></td>
+                                <td><%= item.getCategoryName() %></td>
+                                <td><%= item.getLotNumber() %></td>
+                                <td><%= item.getExpirationDate() %></td>
+                                <td><%= item.getLocation() %></td>
+                                <td><%= item.getStock() %></td>
+                            </tr>
+
+                            <!-- Expand Row -->
+                            <tr id="<%= rowId %>" style="display:none;">
+                                <td colspan="7">
+                                    <div class="expanded-box">
+
+                                        <div class="expanded-grid">
+                                            <p><strong>Reference:</strong> <%= item.getItemReferenceNumber() %></p>
+                                            <p><strong>Name:</strong> <%= item.getItemName() %></p>
+                                            <p><strong>Category:</strong> <%= item.getCategoryName() %></p>
+                                            <p><strong>Lot:</strong> <%= item.getLotNumber() %></p>
+                                            <p><strong>Expiry:</strong> <%= item.getExpirationDate() %></p>
+                                            <p><strong>Location:</strong> <%= item.getLocation() %></p>
+
+                                            <% if (item.getStock() <= 10) { %>
+                                                <p><strong>Status:</strong> <span class="badge badge-low">Low Stock</span></p>
+                                            <% } else { %>
+                                                <p><strong>Status:</strong> <span class="badge badge-done">Available</span></p>
+                                            <% } %>
+                                        </div>
+
+                                        <!-- Actions -->
+                                        <div class="expanded-actions">
+
+                                            <!-- Withdraw -->
+                                            <form action="<%= request.getContextPath() %>/inventory" method="post">
+                                                <input type="hidden" name="action" value="withdraw" />
+                                                <input type="hidden" name="itemReferenceNumber" value="<%= item.getItemReferenceNumber() %>" />
+                                                <input type="hidden" name="locationID" value="<%= item.getLocationID() %>" />
+
+                                                <input type="number" name="qty" min="1" required />
+                                                <button type="submit" class="primary-btn">Withdraw</button>
+                                            </form>
+
+                                            <% if (admin != null) { %>
+                                            <!-- Add Stock -->
+                                            <form action="<%= request.getContextPath() %>/inventory" method="post">
+                                                <input type="hidden" name="action" value="update" />
+                                                <input type="hidden" name="itemReferenceNumber" value="<%= item.getItemReferenceNumber() %>" />
+                                                <input type="hidden" name="locationID" value="<%= item.getLocationID() %>" />
+
+                                                <input type="number" name="qty" min="1" required />
+                                                <button type="submit" class="secondary-btn">Add Stock</button>
+                                            </form>
+                                            <% } %>
+
+                                        </div>
+
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <% } %>
+
+                        <% } else { %>
+                            <tr>
+                                <td colspan="7">No inventory found.</td>
+                            </tr>
+                        <% } %>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
         </div>
-    </div>
-</main>
+    </main>
+</div>
+
+<script>
+function toggleExpand(id) {
+    const row = document.getElementById(id);
+    row.style.display =
+        (row.style.display === "none" || row.style.display === "")
+            ? "table-row"
+            : "none";
+}
+</script>
+
 </body>
 </html>

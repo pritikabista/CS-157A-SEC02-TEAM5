@@ -96,8 +96,15 @@ public class AdminSeeAllUserPurchaseOrdersServlet extends HttpServlet {
 
             if ("approve".equals(action)) {
                 dao.approvePurchaseOrders(orderID, admin.getAccountID());
+
+                response.sendRedirect(request.getContextPath() + "/supplier-info?approved=true&orderID=" + orderID);
+                return;
+
             } else if ("deny".equals(action)) {
                 dao.denyPurchaseOrder(orderID);
+
+                response.sendRedirect(request.getContextPath() + "/admin-purchaseOrder");
+                return;
             }
 
         } catch (NumberFormatException e) {
