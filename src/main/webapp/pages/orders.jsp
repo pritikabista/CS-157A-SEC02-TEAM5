@@ -35,6 +35,42 @@
     </div>
 
     <div class="card" style="margin-top: 20px;">
+
+      <form class="toolbar" method="get"
+          action="<%= request.getContextPath() %>/orders">
+
+        <select name="status">
+
+            <option value="">All</option>
+
+            <option value="APPROVED"
+                <%= "APPROVED".equals(request.getParameter("status"))
+                    ? "selected" : "" %>>
+                Approved
+            </option>
+
+            <option value="DENIED"
+                <%= "DENIED".equals(request.getParameter("status"))
+                    ? "selected" : "" %>>
+                Denied
+            </option>
+
+            <option value="COMPLETED"
+                <%= "COMPLETED".equals(request.getParameter("status"))
+                    ? "selected" : "" %>>
+                Completed
+            </option>
+
+        </select>
+
+        <button type="submit">Apply</button>
+
+        <a href="<%= request.getContextPath() %>/orders">
+            Reset
+        </a>
+
+      </form>
+
       <div class="table-wrap">
         <table>
           <thead>
@@ -57,15 +93,40 @@
                   <td><%= order.getSupplierName() %></td>
                   <td>
                     <% if (order.getStatus().toString().equals("APPROVED")) { %>
-                      <span class="badge badge-process">In Process</span>
+                      <span class="badge badge-process">
+                        In Process
+                      </span>
                     <% } else if (order.getStatus().toString().equals("DENIED")) { %>
-                      <span class="badge badge-exp">Denied</span>
+                      <span class="badge badge-exp">
+                        Denied
+                      </span>
+                    <% } else if (order.getStatus().toString().equals("COMPLETED")) { %>
+                      <span class="badge badge-done">
+                        Completed
+                      </span>
                     <% } %>
                   </td>
                   <td>
-                    <button class="secondary-btn" onclick="toggleStatus(this)">
-                      Mark Done
-                    </button>
+                    <% if (order.getStatus().toString().equals("APPROVED")) { %>
+                      <form action="<%= request.getContextPath() %>/orders"
+                            method="post">
+                        <input type="hidden"
+                              name="action"
+                              value="complete">
+                        <input type="hidden"
+                              name="orderID"
+                              value="<%= order.getOrderID() %>">
+                        <button type="submit"
+                                class="secondary-btn">
+                          Mark Done
+                        </button>
+                      </form>
+                    <% } else { %>
+                      <span style="color: gray;">
+                        No Actions
+                      </span>
+
+                    <% } %>
                   </td>
                 </tr>
               <% } %>
@@ -92,22 +153,5 @@
     %>
   </main>
 </div>
-
-<script>
-
-  function toggleStatus(button) {
-    const row = button.closest("tr");
-    const statusCell = row.cells[3];
-
-    if (statusCell.innerText.includes("Done")) {
-      statusCell.innerHTML = '<span class="badge badge-process">In Process</span>';
-      button.innerText = "Mark Done";
-    } else {
-      statusCell.innerHTML = '<span class="badge badge-done">Done</span>';
-      button.innerText = "Set In Process";
-    }
-  }
-</script>
-
 </body>
 </html>

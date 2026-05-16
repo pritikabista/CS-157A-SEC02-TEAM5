@@ -40,6 +40,12 @@ public class PurchaseOrderDAO {
         String sql_query = "UPDATE Purchase_orders SET Status = 'DENIED' WHERE Order_ID = ? AND Status = 'PENDING'";
         return executeUpdate(sql_query, orderID);
     }
+
+    public boolean completePurchaseOrder(int orderID) {
+        String sql_query = "UPDATE Purchase_orders SET Status = 'COMPLETED' WHERE Order_ID = ? AND Status = 'APPROVED'";
+
+        return executeUpdate(sql_query, orderID);
+    }
             
     public boolean insertPurchaseOrder(int itemReferenceNum,String message, int qty, int userID){ //user create a new purcharseorder (insert it into the database, purchaseOrder table and Requests table
         //int approvedBy = 0; don't insert anything, allow Null 
@@ -84,7 +90,7 @@ public class PurchaseOrderDAO {
                             "JOIN Items t ON t.Item_Reference_Number = p.Item_Reference_Number " +
                             "JOIN Supplies sp ON p.Item_Reference_Number = sp.Item_Reference_Number " +
                             "JOIN Suppliers s ON sp.Supplier_ID = s.Supplier_ID " +
-                            "WHERE p.Status = 'APPROVED' OR p.Status = 'DENIED'";
+                            "WHERE p.Status = 'APPROVED' OR p.Status = 'DENIED' OR p.Status = 'COMPLETED'";
 
         return executeQueryForAdmins(sql_query);
     }
