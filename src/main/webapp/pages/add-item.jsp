@@ -88,11 +88,9 @@
               <label for="category">Category</label>
               <select id="category" name="category" required>
                 <option value="">Select category</option>
-                <option value="1">PPE</option>
-                <option value="2">Injection Supplies</option>
-                <option value="3">Fluids</option>
-                <option value="4">Medication</option>
-                <option value="5">Sterile Supplies</option>
+                <option value="1">Frozen</option>
+                <option value="2">Refrigerated</option>
+                <option value="3">Room Temp</option>
               </select>
             </div>
 
@@ -110,15 +108,7 @@
               <select id="location" name="location" required>
                 <option value="">Select location</option>
                 <option value="1">B1-R101</option>
-                <option value="2">B1-R102</option>
-                <option value="3">B1-R103</option>
-                <option value="4">B2-R201</option>
-                <option value="5">B2-R202</option>
-                <option value="6">B2-R203</option>
-                <option value="7">B3-R301</option>
-                <option value="8">B3-R302</option>
-                <option value="9">B3-R303</option>
-                <option value="10">B1-R100</option>
+                <option value="2">B1-R202</option>
               </select>
             </div>
 
