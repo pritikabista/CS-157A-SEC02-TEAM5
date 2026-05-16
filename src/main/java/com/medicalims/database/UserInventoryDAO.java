@@ -128,6 +128,76 @@ public class UserInventoryDAO {
         return executeQuery(sql_query, userInputString, userInputString);
     }
 
+    public boolean itemExists(int itemReferenceNumber) {
+        String sql = "SELECT Item_Reference_Number FROM Items WHERE Item_Reference_Number = ?";
+
+        try {
+            Connection con = DBConnection.getConnection();
+            PreparedStatement stmt = con.prepareStatement(sql);
+
+            stmt.setInt(1, itemReferenceNumber);
+
+            ResultSet rs = stmt.executeQuery();
+            boolean exists = rs.next();
+
+            rs.close();
+            stmt.close();
+            con.close();
+
+            return exists;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean insertNewItem(int itemReferenceNumber, String itemName, int categoryID,
+                                int lotNumber, Date expirationDate) {
+        String sql =
+            "INSERT INTO Items (Item_Reference_Number, Category_ID, Lot_Number, Item_Name, Expiration_Date) " +
+            "VALUES (?, ?, ?, ?, ?)";
+
+        return executeUpdate(sql, itemReferenceNumber, categoryID, lotNumber, itemName, expirationDate);
+    }
+
+    public boolean insertInventoryRow(int itemReferenceNumber, int stock, int locationID) {
+        String sql =
+            "INSERT INTO Inventory (Item_Reference_Number, Stock, Location_ID) " +
+            "VALUES (?, ?, ?)";
+
+        return executeUpdate(sql, itemReferenceNumber, stock, locationID);
+    }
+
+    public boolean insertSupplyRow(int supplierID, int itemReferenceNumber) {
+        String sql =
+            "INSERT INTO Supplies (Supplier_ID, Item_Reference_Number) " +
+            "VALUES (?, ?)";
+
+        return executeUpdate(sql, supplierID, itemReferenceNumber);
+    }
+
+    public boolean addInventoryItem(int itemReferenceNumber, String itemName,
+                                    int categoryID, int lotNumber,
+                                    Date expirationDate, int stock,
+                                    int locationID, int supplierID) {
+
+        if (itemExists(itemReferenceNumber)) {
+            return updateItemStock(itemReferenceNumber, stock, locationID);
+        }
+
+        boolean itemInserted =
+            insertNewItem(itemReferenceNumber, itemName, categoryID, lotNumber, expirationDate);
+
+        if (!itemInserted) {
+            return false;
+        }
+
+        insertSupplyRow(supplierID, itemReferenceNumber);
+
+        return insertInventoryRow(itemReferenceNumber, stock, locationID);
+    }
+
 
     private List<InventoryItem> executeQuery(String sql_query, Object... params){ //Object = variable number of parameters
         List<InventoryItem> inventoryItems = new ArrayList<>(); 
